@@ -296,3 +296,18 @@ The current core task treats both write-side proofs as validated evidence.
 `docs/patches/miku-md2xlsx-ms-office-core-proof.patch` remain the replayable
 artifacts. The sibling working tree changes must not be reverted unless the
 user explicitly asks for that.
+
+## 2026-06-22: Add CI Baseline GitHub Actions Workflow
+
+Reason:
+The repository had no GitHub Actions workflow. For the current internal ESM
+package foundation, the immediate need is push/PR verification, not release
+asset upload or npm publishing.
+
+Impact:
+`.github/workflows/ci.yml` runs on branch pushes, `v*` tag pushes, pull
+requests, and manual dispatch. It uses Node.js 20, installs dependencies with
+`npm ci`, then runs `npm test`, `npm audit`, `npm run build`, and
+`npm pack --dry-run` in order. A `v*` tag push verifies the package build only;
+GitHub Release asset upload and npm publish workflows remain out of scope until
+explicitly requested.
