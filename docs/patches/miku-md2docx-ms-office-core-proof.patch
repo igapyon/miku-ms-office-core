@@ -1,0 +1,171 @@
+diff --git a/package.json b/package.json
+index dde0e22..ab2c2cc 100644
+--- a/package.json
++++ b/package.json
+@@ -17,6 +17,7 @@
+     "build:all": "npm run build && npm run build:bundle"
+   },
+   "dependencies": {
++    "miku-ms-office-core": "file:../miku-ms-office-core",
+     "remark-frontmatter": "^5.0.0",
+     "remark-gfm": "^4.0.1",
+     "remark-parse": "^11.0.0",
+@@ -25,8 +26,11 @@
+   },
+   "devDependencies": {
+     "@types/node": "^22.10.2",
+-    "esbuild": "^0.27.7",
++    "esbuild": "^0.28.1",
+     "typescript": "^5.7.3",
+     "vitest": "^3.0.0"
++  },
++  "overrides": {
++    "esbuild": "^0.28.1"
+   }
+ }
+diff --git a/src/ts/core.ts b/src/ts/core.ts
+index 8c6b907..6946e13 100644
+--- a/src/ts/core.ts
++++ b/src/ts/core.ts
+@@ -1,4 +1,4 @@
+-import { createZip } from "./zip-io.ts";
++import { writeZipPackage } from "miku-ms-office-core";
+ import { buildDocxEntries, buildDocumentXml } from "./docx-package.ts";
+ import { collectHeadingBookmarks, parseMarkdown } from "./markdown-parser.ts";
+ import { renderBlocks } from "./ooxml-renderer.ts";
+@@ -26,5 +26,5 @@ export function convertMarkdownToDocx(markdown: string, options: Md2DocxOptions
+   const bodyBlocks = renderBlocks(tree.children ?? [], context);
+   const documentXml = buildDocumentXml(bodyBlocks.join(""));
+   const entries = buildDocxEntries(documentXml, context);
+-  return { docx: createZip(entries), summary };
++  return { docx: writeZipPackage(entries), summary };
+ }
+diff --git a/src/ts/docx-package.ts b/src/ts/docx-package.ts
+index a9885d0..df11ce1 100644
+--- a/src/ts/docx-package.ts
++++ b/src/ts/docx-package.ts
+@@ -1,11 +1,10 @@
++import { buildOpcContentTypesXml, type ZipEntryInput } from "miku-ms-office-core";
+ import type { RenderContext } from "./types.ts";
+-import type { ZipFileEntry } from "./zip-io.ts";
+ import { contentTypeForExt } from "./image-assets.ts";
+ import { documentRelsXml } from "./relationships.ts";
+ import { appPropsXml, corePropsXml, numberingXml, packageRelsXml, stylesXml } from "./docx-templates.ts";
+-import { escapeAttr } from "./xml-utils.ts";
+ 
+-export function buildDocxEntries(documentXml: string, context: RenderContext): ZipFileEntry[] {
++export function buildDocxEntries(documentXml: string, context: RenderContext): ZipEntryInput[] {
+   return [
+     { path: "[Content_Types].xml", data: contentTypesXml(context.imageMedia) },
+     { path: "_rels/.rels", data: packageRelsXml() },
+@@ -23,12 +22,39 @@ export function buildDocumentXml(body: string): string {
+   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><w:body>${body}<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+ }
+ 
+-function contentTypesXml(images: ZipFileEntry[]): string {
++function contentTypesXml(images: ZipEntryInput[]): string {
+   const defaults = new Set(["png", "jpg", "jpeg", "gif", "webp"]);
+   for (const image of images) {
+     const ext = image.path.split(".").pop()?.toLowerCase();
+     if (ext) defaults.add(ext);
+   }
+-  const imageDefaults = [...defaults].map((ext) => `<Default Extension="${escapeAttr(ext)}" ContentType="${escapeAttr(contentTypeForExt(ext))}"/>`).join("");
+-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>${imageDefaults}<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`;
++  return buildOpcContentTypesXml({
++    defaults: [
++      {
++        extension: "rels",
++        contentType: "application/vnd.openxmlformats-package.relationships+xml"
++      },
++      { extension: "xml", contentType: "application/xml" },
++      ...Array.from(defaults).map((extension) => ({
++        extension,
++        contentType: contentTypeForExt(extension)
++      }))
++    ],
++    overrides: [
++      {
++        partName: "word/document.xml",
++        contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
++      },
++      {
++        partName: "word/styles.xml",
++        contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"
++      },
++      {
++        partName: "word/numbering.xml",
++        contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"
++      },
++      { partName: "docProps/core.xml", contentType: "application/vnd.openxmlformats-package.core-properties+xml" },
++      { partName: "docProps/app.xml", contentType: "application/vnd.openxmlformats-officedocument.extended-properties+xml" }
++    ]
++  });
+ }
+diff --git a/src/ts/relationships.ts b/src/ts/relationships.ts
+index c27a29a..08cab40 100644
+--- a/src/ts/relationships.ts
++++ b/src/ts/relationships.ts
+@@ -1,5 +1,5 @@
+ import type { RenderContext, Relationship } from "./types.ts";
+-import { escapeAttr } from "./xml-utils.ts";
++import { buildOpcRelationshipsXml, type OpcRelationship } from "miku-ms-office-core";
+ 
+ export const REL_OFFICE_DOCUMENT = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
+ export const REL_HYPERLINK = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink";
+@@ -7,7 +7,7 @@ export const REL_IMAGE = "http://schemas.openxmlformats.org/officeDocument/2006/
+ export const REL_STYLES = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles";
+ export const REL_NUMBERING = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering";
+ 
+-const REQUIRED_DOCUMENT_RELATIONSHIPS: Relationship[] = [
++const REQUIRED_DOCUMENT_RELATIONSHIPS: OpcRelationship[] = [
+   { id: "rIdStyles", type: REL_STYLES, target: "styles.xml" },
+   { id: "rIdNumbering", type: REL_NUMBERING, target: "numbering.xml" }
+ ];
+@@ -19,9 +19,5 @@ export function addRelationship(context: RenderContext, type: string, target: st
+ }
+ 
+ export function documentRelsXml(relationships: Relationship[]): string {
+-  const rels = [...REQUIRED_DOCUMENT_RELATIONSHIPS, ...relationships].map((rel) => {
+-    const mode = rel.targetMode ? ` TargetMode="${escapeAttr(rel.targetMode)}"` : "";
+-    return `<Relationship Id="${rel.id}" Type="${escapeAttr(rel.type)}" Target="${escapeAttr(rel.target)}"${mode}/>`;
+-  }).join("");
+-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${rels}</Relationships>`;
++  return buildOpcRelationshipsXml([...REQUIRED_DOCUMENT_RELATIONSHIPS, ...relationships]);
+ }
+diff --git a/src/ts/types.ts b/src/ts/types.ts
+index 6f71657..6216900 100644
+--- a/src/ts/types.ts
++++ b/src/ts/types.ts
+@@ -1,4 +1,4 @@
+-import type { ZipFileEntry } from "./zip-io.ts";
++import type { ZipEntryInput } from "miku-ms-office-core";
+ 
+ export interface ImageAsset {
+   path: string;
+@@ -49,7 +49,7 @@ export interface RenderContext {
+   relationships: Relationship[];
+   headingBookmarks: WeakMap<object, string>;
+   knownBookmarks: Set<string>;
+-  imageMedia: ZipFileEntry[];
++  imageMedia: ZipEntryInput[];
+   nextRelId: number;
+   nextDocPrId: number;
+   options: Md2DocxOptions;
+diff --git a/tests/md2docx-core.test.js b/tests/md2docx-core.test.js
+index 340a8df..f660efb 100644
+--- a/tests/md2docx-core.test.js
++++ b/tests/md2docx-core.test.js
+@@ -11,10 +11,10 @@ describe("convertMarkdownToDocx", () => {
+       "_rels/.rels",
+       "docProps/app.xml",
+       "docProps/core.xml",
+-      "word/document.xml",
+       "word/_rels/document.xml.rels",
+-      "word/styles.xml",
+-      "word/numbering.xml"
++      "word/document.xml",
++      "word/numbering.xml",
++      "word/styles.xml"
+     ]);
+     expect(entries.get("word/document.xml")).toContain('<w:pStyle w:val="Heading1"/>');
+     expect(entries.get("word/document.xml")).toContain('<w:t xml:space="preserve">Hello </w:t>');
