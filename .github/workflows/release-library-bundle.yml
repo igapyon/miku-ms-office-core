@@ -52,23 +52,7 @@ jobs:
       - name: Prepare library bundle asset
         env:
           TAG_NAME: ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.ref_name }}
-        run: |
-          set -euo pipefail
-          VERSION="${TAG_NAME#v}"
-          PACKAGE_NAME="$(node -p "require('./package.json').name")"
-          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
-
-          case "${VERSION}" in
-            "${PACKAGE_VERSION}"|"${PACKAGE_VERSION}".*) ;;
-            *)
-              echo "Release tag version (${VERSION}) must match package.json version (${PACKAGE_VERSION}) or add a dot suffix such as ${PACKAGE_VERSION}.1." >&2
-              exit 1
-              ;;
-          esac
-
-          mkdir -p release-assets
-          cp "bundle/${PACKAGE_NAME}.mjs" "release-assets/${PACKAGE_NAME}-${VERSION}.mjs"
-          cp "bundle/${PACKAGE_NAME}.mjs.map" "release-assets/${PACKAGE_NAME}-${VERSION}.mjs.map"
+        run: npm run prepare:release-assets
 
       - name: Upload library bundle to GitHub Release
         uses: softprops/action-gh-release@v2

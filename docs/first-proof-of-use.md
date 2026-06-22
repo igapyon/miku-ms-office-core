@@ -22,7 +22,7 @@ table, image rendering, or Markdown conversion semantics into
 
 ## Proposed Proof Steps
 
-1. Add `miku-ms-office-core` as a local development dependency in
+1. Vendor `miku-ms-office-core-0.5.0.mjs` from the GitHub Release asset into
    `miku-md2docx`.
 2. In `src/ts/core.ts`, replace `createZip(entries)` with
    `writeZipPackage(entries)`.
@@ -52,14 +52,28 @@ import {
 } from "miku-ms-office-core";
 ```
 
-Avoid imports from private `dist/*` paths.
+In the landing proof, import from the vendored release asset path instead of a
+package dependency:
+
+```ts
+import {
+  buildOpcContentTypesXml,
+  buildOpcRelationshipsXml,
+  writeZipPackage,
+  type OpcRelationship,
+  type ZipEntryInput
+} from "../vendor/miku-ms-office-core-0.5.0.mjs";
+```
+
+Avoid imports from private `dist/*` paths and avoid keeping
+`file:../miku-ms-office-core` as the final dependency shape.
 
 ## Expected Code Shape
 
 `src/ts/core.ts`:
 
 ```ts
-import { writeZipPackage } from "miku-ms-office-core";
+import { writeZipPackage } from "../vendor/miku-ms-office-core-0.5.0.mjs";
 
 // ...
 return { docx: writeZipPackage(entries), summary };
@@ -68,7 +82,7 @@ return { docx: writeZipPackage(entries), summary };
 `src/ts/relationships.ts`:
 
 ```ts
-import { buildOpcRelationshipsXml, type OpcRelationship } from "miku-ms-office-core";
+import { buildOpcRelationshipsXml, type OpcRelationship } from "../vendor/miku-ms-office-core-0.5.0.mjs";
 
 const REQUIRED_DOCUMENT_RELATIONSHIPS: OpcRelationship[] = [
   { id: "rIdStyles", type: REL_STYLES, target: "styles.xml" },
@@ -83,7 +97,7 @@ export function documentRelsXml(relationships: Relationship[]): string {
 `src/ts/docx-package.ts`:
 
 ```ts
-import { buildOpcContentTypesXml, type ZipEntryInput } from "miku-ms-office-core";
+import { buildOpcContentTypesXml, type ZipEntryInput } from "../vendor/miku-ms-office-core-0.5.0.mjs";
 
 function contentTypesXml(images: ZipEntryInput[]): string {
   return buildOpcContentTypesXml({
@@ -156,8 +170,9 @@ Do not commit files under `workplace/` except `workplace/.gitkeep`.
 
 ## Current Proof Result
 
-The proof was applied to the sibling `miku-md2docx` working tree on
-2026-06-22. The sibling change uses `miku-ms-office-core` for:
+The proof was refreshed in the sibling `miku-md2docx` working tree on
+2026-06-22 to use the versioned release `.mjs` asset. The sibling change uses
+the vendored `miku-ms-office-core-0.5.0.mjs` for:
 
 - reproducible ZIP package writing through `writeZipPackage`
 - relationship XML through `buildOpcRelationshipsXml`
@@ -179,10 +194,10 @@ npm run build:all
 npm run smoke:bundle
 ```
 
-All of the above passed after the audit cleanup. `npm ls esbuild vite vitest
-miku-ms-office-core` can still report a linked-development-tree caveat because
-the local `file:../miku-ms-office-core` dependency exposes its own dev
-dependency tree; this did not block audit, tests, smoke, or bundle verification.
+All of the above passed after the audit cleanup. The earlier local
+`file:../miku-ms-office-core` dependency was removed from the refreshed proof;
+the product imports from `src/vendor/miku-ms-office-core-0.5.0.mjs`, and the
+CLI release bundle includes the vendored helper code.
 
 ## Verification Commands
 
@@ -197,7 +212,6 @@ Sibling-side after applying the proof patch:
 
 ```sh
 git apply ../miku-ms-office-core/docs/patches/miku-md2docx-ms-office-core-proof.patch
-npm install
 npm audit
 npm test
 npm run smoke:docx

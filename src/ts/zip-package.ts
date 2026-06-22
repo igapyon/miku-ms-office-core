@@ -1,4 +1,3 @@
-import { deflateRawSync, inflateRawSync } from "node:zlib";
 import { asBytes, concatBytes, readUint16, readUint32, textDecoder, textEncoder, writeUint16, writeUint32 } from "./binary-io.js";
 import { crc32 } from "./crc32.js";
 import { createDiagnostic, type OfficeDiagnostic } from "./diagnostics.js";
@@ -55,6 +54,11 @@ const CENTRAL_DIRECTORY_SIGNATURE = 0x02014b50;
 const LOCAL_FILE_SIGNATURE = 0x04034b50;
 const FIXED_TIMESTAMP = new Date(Date.UTC(1980, 0, 1, 0, 0, 0));
 
+interface NodeZlibLike {
+  deflateRawSync(data: Uint8Array, options?: { level?: number }): Uint8Array | Buffer;
+  inflateRawSync(data: Uint8Array): Uint8Array | Buffer;
+}
+
 export function getDefaultZipEntryTimestamp(): Date {
   return new Date(FIXED_TIMESTAMP.getTime());
 }
@@ -71,7 +75,7 @@ export function readZipPackage(data: Uint8Array): ZipReadResult {
       const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;
       const compressed = data.slice(dataStart, dataStart + central.compressedSize);
       const entryData =
-        central.method === 0 ? compressed : inflateRawSync(compressed);
+        central.method === 0 ? compressed : getNodeZlib().inflateRawSync(compressed);
 
       entries.push({
         path: central.path,
@@ -164,7 +168,7 @@ export function writeZipPackage(entries: ZipEntryInput[], options: ZipWriteOptio
     const compressed =
       entry.compression === "store"
         ? entry.data
-        : new Uint8Array(deflateRawSync(entry.data, { level: options.compressionLevel ?? 9 }));
+        : new Uint8Array(getNodeZlib().deflateRawSync(entry.data, { level: options.compressionLevel ?? 9 }));
     const crc = crc32(entry.data);
     const dosTime = toDosTime(entry.modifiedAt);
     const dosDate = toDosDate(entry.modifiedAt);
@@ -357,5 +361,27 @@ async function defaultInflateZipRawAsync(compressed: Uint8Array): Promise<Uint8A
     }
   }
 
-  return new Uint8Array(inflateRawSync(compressed));
+  return new Uint8Array(getNodeZlib().inflateRawSync(compressed));
+}
+
+function getNodeZlib(): NodeZlibLike {
+  const runtime = globalThis as typeof globalThis & {
+    process?: {
+      getBuiltinModule?: (specifier: string) => unknown;
+    };
+  };
+  const getBuiltinModule = runtime.process?.getBuiltinModule;
+  const zlib = typeof getBuiltinModule === "function"
+    ? getBuiltinModule("node:zlib") ?? getBuiltinModule("zlib")
+    : undefined;
+
+  if (
+    zlib !== undefined &&
+    typeof (zlib as NodeZlibLike).deflateRawSync === "function" &&
+    typeof (zlib as NodeZlibLike).inflateRawSync === "function"
+  ) {
+    return zlib as NodeZlibLike;
+  }
+
+  throw new Error("Node zlib is required for synchronous ZIP deflate operations. Use stored entries, readZipPackageAsync with DecompressionStream, or inject an async inflater.");
 }

@@ -1,16 +1,603 @@
+diff --git a/package-lock.json b/package-lock.json
+index b2e483a..205ed94 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -15,15 +15,15 @@
+       },
+       "devDependencies": {
+         "@types/node": "^22.10.2",
+-        "esbuild": "^0.27.7",
++        "esbuild": "^0.28.1",
+         "typescript": "^5.7.3",
+         "vitest": "^3.0.0"
+       }
+     },
+     "node_modules/@esbuild/aix-ppc64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.27.7.tgz",
+-      "integrity": "sha512-EKX3Qwmhz1eMdEJokhALr0YiD0lhQNwDqkPYyPhiSwKrh7/4KRjQc04sZ8db+5DVVnZ1LmbNDI1uAMPEUBnQPg==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.28.1.tgz",
++      "integrity": "sha512-Svl7tq8k/08+p6CXPpRjQ1fKX+1odH/BQbb48fV6fj3CWHhsoIOoY87w1oHXm0qEpkIK3ZfVgp0hed3XBXzXMQ==",
+       "cpu": [
+         "ppc64"
+       ],
+@@ -38,9 +38,9 @@
+       }
+     },
+     "node_modules/@esbuild/android-arm": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.27.7.tgz",
+-      "integrity": "sha512-jbPXvB4Yj2yBV7HUfE2KHe4GJX51QplCN1pGbYjvsyCZbQmies29EoJbkEc+vYuU5o45AfQn37vZlyXy4YJ8RQ==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.28.1.tgz",
++      "integrity": "sha512-0k2F129Xdio1TdJfzJ8sy1Q47vUD2NnwdhiAf7drUN1EBTfPf4hsFCtmMgu/6m8JSzsBrlmVjudMBQqOfG8usQ==",
+       "cpu": [
+         "arm"
+       ],
+@@ -55,9 +55,9 @@
+       }
+     },
+     "node_modules/@esbuild/android-arm64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.27.7.tgz",
+-      "integrity": "sha512-62dPZHpIXzvChfvfLJow3q5dDtiNMkwiRzPylSCfriLvZeq0a1bWChrGx/BbUbPwOrsWKMn8idSllklzBy+dgQ==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.28.1.tgz",
++      "integrity": "sha512-34EGEbCIAgosYz6goLcopX6Mo7NyGv9tfwEM2/7Ce2VcVRk568iSvniGWcUXIy7wEDR1wzolcxcriFVrWYcwBg==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -72,9 +72,9 @@
+       }
+     },
+     "node_modules/@esbuild/android-x64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.27.7.tgz",
+-      "integrity": "sha512-x5VpMODneVDb70PYV2VQOmIUUiBtY3D3mPBG8NxVk5CogneYhkR7MmM3yR/uMdITLrC1ml/NV1rj4bMJuy9MCg==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.28.1.tgz",
++      "integrity": "sha512-dbwY7ltSMDWsRatcRpCnES4F+im88OCUgGZjy52shC7GqHRE/cYlxNbB4Z4UpJswpcc4Qxd2oE/ufM0p61IKng==",
+       "cpu": [
+         "x64"
+       ],
+@@ -89,9 +89,9 @@
+       }
+     },
+     "node_modules/@esbuild/darwin-arm64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.27.7.tgz",
+-      "integrity": "sha512-5lckdqeuBPlKUwvoCXIgI2D9/ABmPq3Rdp7IfL70393YgaASt7tbju3Ac+ePVi3KDH6N2RqePfHnXkaDtY9fkw==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.28.1.tgz",
++      "integrity": "sha512-TZbWkQY7kvTAXbXUT7uVACR5cMHsDiSz9z7ZKAX/RTq/WJEk3QyRr0wZpNhBDX+/0CtdqUIJlOiodQcta6tY3Q==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -106,9 +106,9 @@
+       }
+     },
+     "node_modules/@esbuild/darwin-x64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.27.7.tgz",
+-      "integrity": "sha512-rYnXrKcXuT7Z+WL5K980jVFdvVKhCHhUwid+dDYQpH+qu+TefcomiMAJpIiC2EM3Rjtq0sO3StMV/+3w3MyyqQ==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.28.1.tgz",
++      "integrity": "sha512-zfdzgK9ACBNZLI/CyHTOx81SyNbM6YXn7rxSgX97VjyiPl9W1i4Ka4fgKECEoFCKGpvBj5qArWIGgQjOwkgskQ==",
+       "cpu": [
+         "x64"
+       ],
+@@ -123,9 +123,9 @@
+       }
+     },
+     "node_modules/@esbuild/freebsd-arm64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.27.7.tgz",
+-      "integrity": "sha512-B48PqeCsEgOtzME2GbNM2roU29AMTuOIN91dsMO30t+Ydis3z/3Ngoj5hhnsOSSwNzS+6JppqWsuhTp6E82l2w==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.28.1.tgz",
++      "integrity": "sha512-wG2EA8ENdEI0qhkSZMjfqrdY+ziCYCPMmtZjjIwOmXFjmyzEHn+UUxk5of+SYsjtfs3VpnlC7QLzSI5hY/rOAw==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -140,9 +140,9 @@
+       }
+     },
+     "node_modules/@esbuild/freebsd-x64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.27.7.tgz",
+-      "integrity": "sha512-jOBDK5XEjA4m5IJK3bpAQF9/Lelu/Z9ZcdhTRLf4cajlB+8VEhFFRjWgfy3M1O4rO2GQ/b2dLwCUGpiF/eATNQ==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.28.1.tgz",
++      "integrity": "sha512-i7dZ9vQgnvSCzi/rYCXNgtF/U+eKZNJBzu3eTQbRgHnM7tNSizLOkRFAl3qzVc/Op/u5YkHHa4pf/3DOYHthLQ==",
+       "cpu": [
+         "x64"
+       ],
+@@ -157,9 +157,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-arm": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.27.7.tgz",
+-      "integrity": "sha512-RkT/YXYBTSULo3+af8Ib0ykH8u2MBh57o7q/DAs3lTJlyVQkgQvlrPTnjIzzRPQyavxtPtfg0EopvDyIt0j1rA==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.28.1.tgz",
++      "integrity": "sha512-qVXBOHQS+d5Y722GwJzJUtOLlX7km3CraOaGormF1pDtPd2C/l1SHRPgjLunLGe51Sh5YYWKMFDyV4SxgMQYTQ==",
+       "cpu": [
+         "arm"
+       ],
+@@ -174,9 +174,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-arm64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.27.7.tgz",
+-      "integrity": "sha512-RZPHBoxXuNnPQO9rvjh5jdkRmVizktkT7TCDkDmQ0W2SwHInKCAV95GRuvdSvA7w4VMwfCjUiPwDi0ZO6Nfe9A==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.28.1.tgz",
++      "integrity": "sha512-yHs+0uc8+nvEAfAfxrWQKK5peSNzBc4PegcMO0EJ2hT71uA7vB8Ihg2e77R2P7SG5uYjPbHlLLmve4LLLRCf0g==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -191,9 +191,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-ia32": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.27.7.tgz",
+-      "integrity": "sha512-GA48aKNkyQDbd3KtkplYWT102C5sn/EZTY4XROkxONgruHPU72l+gW+FfF8tf2cFjeHaRbWpOYa/uRBz/Xq1Pg==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.28.1.tgz",
++      "integrity": "sha512-d1z4ZuP0ajrfz/FhGT4vv278rX8KnPPJx8i5+AtK7TYbx9Le9F1hyzurZpkEyjkGa9dUGhQow4C1NmeGvqxN2w==",
+       "cpu": [
+         "ia32"
+       ],
+@@ -208,9 +208,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-loong64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.27.7.tgz",
+-      "integrity": "sha512-a4POruNM2oWsD4WKvBSEKGIiWQF8fZOAsycHOt6JBpZ+JN2n2JH9WAv56SOyu9X5IqAjqSIPTaJkqN8F7XOQ5Q==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.28.1.tgz",
++      "integrity": "sha512-M5sRjUVZrkm1OAPR3dlOYzNmN+loZKGVi1VUQGrwuqLcbR6qeAz+famMhjASeH3YVKvZz+zT1jlh/keC3Rj/lg==",
+       "cpu": [
+         "loong64"
+       ],
+@@ -225,9 +225,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-mips64el": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.27.7.tgz",
+-      "integrity": "sha512-KabT5I6StirGfIz0FMgl1I+R1H73Gp0ofL9A3nG3i/cYFJzKHhouBV5VWK1CSgKvVaG4q1RNpCTR2LuTVB3fIw==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.28.1.tgz",
++      "integrity": "sha512-mRObBZeHh2OxcBFPWE/FjylkRgZdYuiTR3vaTozquCGOH14iP9oN4x4Ge81CoIDYQrXmIxpFumJBu5MtZpnQJQ==",
+       "cpu": [
+         "mips64el"
+       ],
+@@ -242,9 +242,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-ppc64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.27.7.tgz",
+-      "integrity": "sha512-gRsL4x6wsGHGRqhtI+ifpN/vpOFTQtnbsupUF5R5YTAg+y/lKelYR1hXbnBdzDjGbMYjVJLJTd2OFmMewAgwlQ==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.28.1.tgz",
++      "integrity": "sha512-slScBsMAb3GFDcdrCgLwZtPYRoH2H/youv10QiZyRjmsP48fznoveWytSgCI/R0ZcUgpc0ZhIUEx6LHts8yrfQ==",
+       "cpu": [
+         "ppc64"
+       ],
+@@ -259,9 +259,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-riscv64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.27.7.tgz",
+-      "integrity": "sha512-hL25LbxO1QOngGzu2U5xeXtxXcW+/GvMN3ejANqXkxZ/opySAZMrc+9LY/WyjAan41unrR3YrmtTsUpwT66InQ==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.28.1.tgz",
++      "integrity": "sha512-kw0owk1o0GFETUJyW0jc0G4Yzs0BHZn0JDZ8JRT088vjJYX777BAs1fDGxAC+q831qOs2DTC96mNsG2opdfyyQ==",
+       "cpu": [
+         "riscv64"
+       ],
+@@ -276,9 +276,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-s390x": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.27.7.tgz",
+-      "integrity": "sha512-2k8go8Ycu1Kb46vEelhu1vqEP+UeRVj2zY1pSuPdgvbd5ykAw82Lrro28vXUrRmzEsUV0NzCf54yARIK8r0fdw==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.28.1.tgz",
++      "integrity": "sha512-/lAIjX8aYFRByhh6L5rYtPEDRqa9de/4V/juOXcta5frjvzXO4/sqEtyytse0g3zZFuWu5cDN0MkLz2qRDD2Ag==",
+       "cpu": [
+         "s390x"
+       ],
+@@ -293,9 +293,9 @@
+       }
+     },
+     "node_modules/@esbuild/linux-x64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.27.7.tgz",
+-      "integrity": "sha512-hzznmADPt+OmsYzw1EE33ccA+HPdIqiCRq7cQeL1Jlq2gb1+OyWBkMCrYGBJ+sxVzve2ZJEVeePbLM2iEIZSxA==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.28.1.tgz",
++      "integrity": "sha512-u/anNYF2mmVOEDwLtnQ1wOr3EZ9sTNGLWrsYGYwHWzGA3Si84IOkHXlbWTD1NB+9/1lcnweYKO54uhxZydNzfA==",
+       "cpu": [
+         "x64"
+       ],
+@@ -310,9 +310,9 @@
+       }
+     },
+     "node_modules/@esbuild/netbsd-arm64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.27.7.tgz",
+-      "integrity": "sha512-b6pqtrQdigZBwZxAn1UpazEisvwaIDvdbMbmrly7cDTMFnw/+3lVxxCTGOrkPVnsYIosJJXAsILG9XcQS+Yu6w==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.28.1.tgz",
++      "integrity": "sha512-oks0DYbLwWMmaakTsCb+zL4E+aHRVLom9IJZOAthMQEPiQmydXHkziYEsGYRx0uNV/IjEKGAV941JzH02pflqw==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -327,9 +327,9 @@
+       }
+     },
+     "node_modules/@esbuild/netbsd-x64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.27.7.tgz",
+-      "integrity": "sha512-OfatkLojr6U+WN5EDYuoQhtM+1xco+/6FSzJJnuWiUw5eVcicbyK3dq5EeV/QHT1uy6GoDhGbFpprUiHUYggrw==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.28.1.tgz",
++      "integrity": "sha512-aeL6lAnN89Hz43Mlh1G8ARasbuoYvSITDEx0tHh5b7jJnHcssqgjy9Yx430GDpmCa6OyrKoS0aNRjKundRizGg==",
+       "cpu": [
+         "x64"
+       ],
+@@ -344,9 +344,9 @@
+       }
+     },
+     "node_modules/@esbuild/openbsd-arm64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.27.7.tgz",
+-      "integrity": "sha512-AFuojMQTxAz75Fo8idVcqoQWEHIXFRbOc1TrVcFSgCZtQfSdc1RXgB3tjOn/krRHENUB4j00bfGjyl2mJrU37A==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.28.1.tgz",
++      "integrity": "sha512-MEFJe5C3R8pwXdZ5Y21oo6m7ePiS0d9pWucn99O/wvyJZChoIQKrQDxKrGeW8F5+T0okTHesAmDeiHDTIq0V/Q==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -361,9 +361,9 @@
+       }
+     },
+     "node_modules/@esbuild/openbsd-x64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.27.7.tgz",
+-      "integrity": "sha512-+A1NJmfM8WNDv5CLVQYJ5PshuRm/4cI6WMZRg1by1GwPIQPCTs1GLEUHwiiQGT5zDdyLiRM/l1G0Pv54gvtKIg==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.28.1.tgz",
++      "integrity": "sha512-i/ZLIOafE0Z8cI/XANJAixoJL/uRAoS2xOA3rb0xN+KK0K177cMAsQYkzHtBrtMXAKuAc7HGgcWiZ/sRC1Nxgw==",
+       "cpu": [
+         "x64"
+       ],
+@@ -378,9 +378,9 @@
+       }
+     },
+     "node_modules/@esbuild/openharmony-arm64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/openharmony-arm64/-/openharmony-arm64-0.27.7.tgz",
+-      "integrity": "sha512-+KrvYb/C8zA9CU/g0sR6w2RBw7IGc5J2BPnc3dYc5VJxHCSF1yNMxTV5LQ7GuKteQXZtspjFbiuW5/dOj7H4Yw==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/openharmony-arm64/-/openharmony-arm64-0.28.1.tgz",
++      "integrity": "sha512-ge+Z7EXFNt2BO1oAMsVpiQ8EwndV9i1xXerAeTIK7AtPs3bKFXQM7nlRxDSIUIMeueR1CNXxqztLzdNeReKBJg==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -395,9 +395,9 @@
+       }
+     },
+     "node_modules/@esbuild/sunos-x64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.27.7.tgz",
+-      "integrity": "sha512-ikktIhFBzQNt/QDyOL580ti9+5mL/YZeUPKU2ivGtGjdTYoqz6jObj6nOMfhASpS4GU4Q/Clh1QtxWAvcYKamA==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.28.1.tgz",
++      "integrity": "sha512-BEjgtECkL3vY+SaSQ6nzVfiALUeFxpawyp8Jmf5PtYhf1Ug40N1h/hxlhts+f1FvSvarEigdxS3BlSMI2PJLcQ==",
+       "cpu": [
+         "x64"
+       ],
+@@ -412,9 +412,9 @@
+       }
+     },
+     "node_modules/@esbuild/win32-arm64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.27.7.tgz",
+-      "integrity": "sha512-7yRhbHvPqSpRUV7Q20VuDwbjW5kIMwTHpptuUzV+AA46kiPze5Z7qgt6CLCK3pWFrHeNfDd1VKgyP4O+ng17CA==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.28.1.tgz",
++      "integrity": "sha512-lCv9eK/H6ZJWbE7bh2nw54CZ9M2nupBxJcTsdk/QQnWkdSjKGuxmmH8/GWrlT1eMmZfn4dGcCjRte397WqfQXA==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -429,9 +429,9 @@
+       }
+     },
+     "node_modules/@esbuild/win32-ia32": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.27.7.tgz",
+-      "integrity": "sha512-SmwKXe6VHIyZYbBLJrhOoCJRB/Z1tckzmgTLfFYOfpMAx63BJEaL9ExI8x7v0oAO3Zh6D/Oi1gVxEYr5oUCFhw==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.28.1.tgz",
++      "integrity": "sha512-zvb/mB2bSCoJOpoCBgYKKpX6YM6mJBlBUVUtVj41DlZJVEB6/0CKlRYxP5wWl1C1ILiCoAU5wZZ4q1P3qeS6Eg==",
+       "cpu": [
+         "ia32"
+       ],
+@@ -446,9 +446,9 @@
+       }
+     },
+     "node_modules/@esbuild/win32-x64": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.27.7.tgz",
+-      "integrity": "sha512-56hiAJPhwQ1R4i+21FVF7V8kSD5zZTdHcVuRFMW0hn753vVfQN8xlx4uOPT4xoGH0Z/oVATuR82AiqSTDIpaHg==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.28.1.tgz",
++      "integrity": "sha512-bm4Mowrv+GXMlpWX++EcXw/iLyd1o3+bJkC2DkWXYVvgZCqD/bSj9ctZeAMC3cIxgjRVR2Dufaiu4YPxr5gW1A==",
+       "cpu": [
+         "x64"
+       ],
+@@ -885,15 +885,15 @@
+       "license": "MIT"
+     },
+     "node_modules/@vitest/expect": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/@vitest/expect/-/expect-3.2.4.tgz",
+-      "integrity": "sha512-Io0yyORnB6sikFlt8QW5K7slY4OjqNX9jmJQ02QDda8lyM6B5oNgVWoSoKPac8/kgnCUzuHQKrSLtu/uOqqrig==",
++      "version": "3.2.6",
++      "resolved": "https://registry.npmjs.org/@vitest/expect/-/expect-3.2.6.tgz",
++      "integrity": "sha512-1+7q9BtaKzEmO+fmNT3kYvoNn5Y71XWAx2Q5HRim4tTVRQVRv4uJFAQ5FbK0OPUeNP/WmVCpxYxoJdvuHVjzBQ==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+         "@types/chai": "^5.2.2",
+-        "@vitest/spy": "3.2.4",
+-        "@vitest/utils": "3.2.4",
++        "@vitest/spy": "3.2.6",
++        "@vitest/utils": "3.2.6",
+         "chai": "^5.2.0",
+         "tinyrainbow": "^2.0.0"
+       },
+@@ -902,13 +902,13 @@
+       }
+     },
+     "node_modules/@vitest/mocker": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/@vitest/mocker/-/mocker-3.2.4.tgz",
+-      "integrity": "sha512-46ryTE9RZO/rfDd7pEqFl7etuyzekzEhUbTW3BvmeO/BcCMEgq59BKhek3dXDWgAj4oMK6OZi+vRr1wPW6qjEQ==",
++      "version": "3.2.6",
++      "resolved": "https://registry.npmjs.org/@vitest/mocker/-/mocker-3.2.6.tgz",
++      "integrity": "sha512-EZOrpDbkKotFAP7wPAQV1UIyoGOk4oX7ynWhBhLB7v+meMHbQhU16oPpIYGTTe4oFlhpryGpgpcZP/sin3hYuw==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/spy": "3.2.4",
++        "@vitest/spy": "3.2.6",
+         "estree-walker": "^3.0.3",
+         "magic-string": "^0.30.17"
+       },
+@@ -929,9 +929,9 @@
+       }
+     },
+     "node_modules/@vitest/pretty-format": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/@vitest/pretty-format/-/pretty-format-3.2.4.tgz",
+-      "integrity": "sha512-IVNZik8IVRJRTr9fxlitMKeJeXFFFN0JaB9PHPGQ8NKQbGpfjlTx9zO4RefN8gp7eqjNy8nyK3NZmBzOPeIxtA==",
++      "version": "3.2.6",
++      "resolved": "https://registry.npmjs.org/@vitest/pretty-format/-/pretty-format-3.2.6.tgz",
++      "integrity": "sha512-lb7XXXzmm2h2ASzFnRvQpDo6onT1NmMJA3tkGTWiBFtRJ9lxGY3d3mm/Apt36gej2bkkOVLL/yTOtufDaFa/jA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -942,13 +942,13 @@
+       }
+     },
+     "node_modules/@vitest/runner": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/@vitest/runner/-/runner-3.2.4.tgz",
+-      "integrity": "sha512-oukfKT9Mk41LreEW09vt45f8wx7DordoWUZMYdY/cyAk7w5TWkTRCNZYF7sX7n2wB7jyGAl74OxgwhPgKaqDMQ==",
++      "version": "3.2.6",
++      "resolved": "https://registry.npmjs.org/@vitest/runner/-/runner-3.2.6.tgz",
++      "integrity": "sha512-HYcoSj1w5tcgUnzoF0HcyaAQjpA1gj9ftUJ7iSJSuipc02jW9gKkigwZbjFldAfYHA1fa8UZVRftdMY5msWM9Q==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/utils": "3.2.4",
++        "@vitest/utils": "3.2.6",
+         "pathe": "^2.0.3",
+         "strip-literal": "^3.0.0"
+       },
+@@ -957,13 +957,13 @@
+       }
+     },
+     "node_modules/@vitest/snapshot": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/@vitest/snapshot/-/snapshot-3.2.4.tgz",
+-      "integrity": "sha512-dEYtS7qQP2CjU27QBC5oUOxLE/v5eLkGqPE0ZKEIDGMs4vKWe7IjgLOeauHsR0D5YuuycGRO5oSRXnwnmA78fQ==",
++      "version": "3.2.6",
++      "resolved": "https://registry.npmjs.org/@vitest/snapshot/-/snapshot-3.2.6.tgz",
++      "integrity": "sha512-H+ZjNTWGpObenh0YnlBctAPnJSI20P81PL8BPzWpx54YXLLTm8hEsWawtcYLMrwvpK48hGxLLbCS+1KRXhsKhw==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/pretty-format": "3.2.4",
++        "@vitest/pretty-format": "3.2.6",
+         "magic-string": "^0.30.17",
+         "pathe": "^2.0.3"
+       },
+@@ -972,9 +972,9 @@
+       }
+     },
+     "node_modules/@vitest/spy": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/@vitest/spy/-/spy-3.2.4.tgz",
+-      "integrity": "sha512-vAfasCOe6AIK70iP5UD11Ac4siNUNJ9i/9PZ3NKx07sG6sUxeag1LWdNrMWeKKYBLlzuK+Gn65Yd5nyL6ds+nw==",
++      "version": "3.2.6",
++      "resolved": "https://registry.npmjs.org/@vitest/spy/-/spy-3.2.6.tgz",
++      "integrity": "sha512-oq6BbH68WzcWmwtBrU9nqLeaXTR4XwJF7FSLkKEZo4i6eoXcrxjcwSuTvWBIRUTC6VC72nXYunzqgZA+IKdtxg==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -985,13 +985,13 @@
+       }
+     },
+     "node_modules/@vitest/utils": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/@vitest/utils/-/utils-3.2.4.tgz",
+-      "integrity": "sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==",
++      "version": "3.2.6",
++      "resolved": "https://registry.npmjs.org/@vitest/utils/-/utils-3.2.6.tgz",
++      "integrity": "sha512-lI23nIs4bnT3T8NIoh+vFaz5s2/DdP0Jgt2jxwgWljvwn82cLJtyi/If+fjFyoLMGIOz0U/fKvWE0d4jsNQEfg==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/pretty-format": "3.2.4",
++        "@vitest/pretty-format": "3.2.6",
+         "loupe": "^3.1.4",
+         "tinyrainbow": "^2.0.0"
+       },
+@@ -1146,9 +1146,9 @@
+       "license": "MIT"
+     },
+     "node_modules/esbuild": {
+-      "version": "0.27.7",
+-      "resolved": "https://registry.npmjs.org/esbuild/-/esbuild-0.27.7.tgz",
+-      "integrity": "sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w==",
++      "version": "0.28.1",
++      "resolved": "https://registry.npmjs.org/esbuild/-/esbuild-0.28.1.tgz",
++      "integrity": "sha512-HrJrvZv5ayxBzPfwphOoNzkzOIIlifzk0KJrGK2c8R4+LKpMtpYLQeUdjnwjWv/LZlkH2laZk+4w78pi99D4Vw==",
+       "dev": true,
+       "hasInstallScript": true,
+       "license": "MIT",
+@@ -1159,32 +1159,32 @@
+         "node": ">=18"
+       },
+       "optionalDependencies": {
+-        "@esbuild/aix-ppc64": "0.27.7",
+-        "@esbuild/android-arm": "0.27.7",
+-        "@esbuild/android-arm64": "0.27.7",
+-        "@esbuild/android-x64": "0.27.7",
+-        "@esbuild/darwin-arm64": "0.27.7",
+-        "@esbuild/darwin-x64": "0.27.7",
+-        "@esbuild/freebsd-arm64": "0.27.7",
+-        "@esbuild/freebsd-x64": "0.27.7",
+-        "@esbuild/linux-arm": "0.27.7",
+-        "@esbuild/linux-arm64": "0.27.7",
+-        "@esbuild/linux-ia32": "0.27.7",
+-        "@esbuild/linux-loong64": "0.27.7",
+-        "@esbuild/linux-mips64el": "0.27.7",
+-        "@esbuild/linux-ppc64": "0.27.7",
+-        "@esbuild/linux-riscv64": "0.27.7",
+-        "@esbuild/linux-s390x": "0.27.7",
+-        "@esbuild/linux-x64": "0.27.7",
+-        "@esbuild/netbsd-arm64": "0.27.7",
+-        "@esbuild/netbsd-x64": "0.27.7",
+-        "@esbuild/openbsd-arm64": "0.27.7",
+-        "@esbuild/openbsd-x64": "0.27.7",
+-        "@esbuild/openharmony-arm64": "0.27.7",
+-        "@esbuild/sunos-x64": "0.27.7",
+-        "@esbuild/win32-arm64": "0.27.7",
+-        "@esbuild/win32-ia32": "0.27.7",
+-        "@esbuild/win32-x64": "0.27.7"
++        "@esbuild/aix-ppc64": "0.28.1",
++        "@esbuild/android-arm": "0.28.1",
++        "@esbuild/android-arm64": "0.28.1",
++        "@esbuild/android-x64": "0.28.1",
++        "@esbuild/darwin-arm64": "0.28.1",
++        "@esbuild/darwin-x64": "0.28.1",
++        "@esbuild/freebsd-arm64": "0.28.1",
++        "@esbuild/freebsd-x64": "0.28.1",
++        "@esbuild/linux-arm": "0.28.1",
++        "@esbuild/linux-arm64": "0.28.1",
++        "@esbuild/linux-ia32": "0.28.1",
++        "@esbuild/linux-loong64": "0.28.1",
++        "@esbuild/linux-mips64el": "0.28.1",
++        "@esbuild/linux-ppc64": "0.28.1",
++        "@esbuild/linux-riscv64": "0.28.1",
++        "@esbuild/linux-s390x": "0.28.1",
++        "@esbuild/linux-x64": "0.28.1",
++        "@esbuild/netbsd-arm64": "0.28.1",
++        "@esbuild/netbsd-x64": "0.28.1",
++        "@esbuild/openbsd-arm64": "0.28.1",
++        "@esbuild/openbsd-x64": "0.28.1",
++        "@esbuild/openharmony-arm64": "0.28.1",
++        "@esbuild/sunos-x64": "0.28.1",
++        "@esbuild/win32-arm64": "0.28.1",
++        "@esbuild/win32-ia32": "0.28.1",
++        "@esbuild/win32-x64": "0.28.1"
+       }
+     },
+     "node_modules/escape-string-regexp": {
+@@ -2568,9 +2568,9 @@
+       }
+     },
+     "node_modules/vite": {
+-      "version": "7.3.3",
+-      "resolved": "https://registry.npmjs.org/vite/-/vite-7.3.3.tgz",
+-      "integrity": "sha512-/4XH147Ui7OGTjg3HbdWe5arnZQSbfuRzdr9Ec7TQi5I7R+ir0Rlc9GIvD4v0XZurELqA035KVXJXpR61xhiTA==",
++      "version": "7.3.5",
++      "resolved": "https://registry.npmjs.org/vite/-/vite-7.3.5.tgz",
++      "integrity": "sha512-KuOaNhcnGFN2zIPGA7wRmzF+lJA1sea7rHq17aiJ++9lzY1WWG6Jpwqwe1KNbRVPIqHmr8GLYx7jbrQcN/7/ww==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -2666,20 +2666,20 @@
+       }
+     },
+     "node_modules/vitest": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/vitest/-/vitest-3.2.4.tgz",
+-      "integrity": "sha512-LUCP5ev3GURDysTWiP47wRRUpLKMOfPh+yKTx3kVIEiu5KOMeqzpnYNsKyOoVrULivR8tLcks4+lga33Whn90A==",
++      "version": "3.2.6",
++      "resolved": "https://registry.npmjs.org/vitest/-/vitest-3.2.6.tgz",
++      "integrity": "sha512-xejya+bT/j/+R/AGa1XOfRxLmNUlLtlwjRsFUILF+xHfzElmGcmFydy2gqqIrd62ptIEfwVMofd19uNWD9L7Nw==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+         "@types/chai": "^5.2.2",
+-        "@vitest/expect": "3.2.4",
+-        "@vitest/mocker": "3.2.4",
+-        "@vitest/pretty-format": "^3.2.4",
+-        "@vitest/runner": "3.2.4",
+-        "@vitest/snapshot": "3.2.4",
+-        "@vitest/spy": "3.2.4",
+-        "@vitest/utils": "3.2.4",
++        "@vitest/expect": "3.2.6",
++        "@vitest/mocker": "3.2.6",
++        "@vitest/pretty-format": "^3.2.6",
++        "@vitest/runner": "3.2.6",
++        "@vitest/snapshot": "3.2.6",
++        "@vitest/spy": "3.2.6",
++        "@vitest/utils": "3.2.6",
+         "chai": "^5.2.0",
+         "debug": "^4.4.1",
+         "expect-type": "^1.2.1",
+@@ -2709,8 +2709,8 @@
+         "@edge-runtime/vm": "*",
+         "@types/debug": "^4.1.12",
+         "@types/node": "^18.0.0 || ^20.0.0 || >=22.0.0",
+-        "@vitest/browser": "3.2.4",
+-        "@vitest/ui": "3.2.4",
++        "@vitest/browser": "3.2.6",
++        "@vitest/ui": "3.2.6",
+         "happy-dom": "*",
+         "jsdom": "*"
+       },
 diff --git a/package.json b/package.json
-index dde0e22..ab2c2cc 100644
+index dde0e22..5bdde9b 100644
 --- a/package.json
 +++ b/package.json
-@@ -17,6 +17,7 @@
-     "build:all": "npm run build && npm run build:bundle"
-   },
-   "dependencies": {
-+    "miku-ms-office-core": "file:../miku-ms-office-core",
-     "remark-frontmatter": "^5.0.0",
-     "remark-gfm": "^4.0.1",
-     "remark-parse": "^11.0.0",
-@@ -25,8 +26,11 @@
+@@ -24,8 +24,11 @@
    },
    "devDependencies": {
      "@types/node": "^22.10.2",
@@ -24,12 +611,12 @@ index dde0e22..ab2c2cc 100644
    }
  }
 diff --git a/src/ts/core.ts b/src/ts/core.ts
-index 8c6b907..6946e13 100644
+index 8c6b907..2ba90e1 100644
 --- a/src/ts/core.ts
 +++ b/src/ts/core.ts
 @@ -1,4 +1,4 @@
 -import { createZip } from "./zip-io.ts";
-+import { writeZipPackage } from "miku-ms-office-core";
++import { writeZipPackage } from "../vendor/miku-ms-office-core-0.5.0.mjs";
  import { buildDocxEntries, buildDocumentXml } from "./docx-package.ts";
  import { collectHeadingBookmarks, parseMarkdown } from "./markdown-parser.ts";
  import { renderBlocks } from "./ooxml-renderer.ts";
@@ -41,11 +628,11 @@ index 8c6b907..6946e13 100644
 +  return { docx: writeZipPackage(entries), summary };
  }
 diff --git a/src/ts/docx-package.ts b/src/ts/docx-package.ts
-index a9885d0..df11ce1 100644
+index a9885d0..39b80c3 100644
 --- a/src/ts/docx-package.ts
 +++ b/src/ts/docx-package.ts
 @@ -1,11 +1,10 @@
-+import { buildOpcContentTypesXml, type ZipEntryInput } from "miku-ms-office-core";
++import { buildOpcContentTypesXml, type ZipEntryInput } from "../vendor/miku-ms-office-core-0.5.0.mjs";
  import type { RenderContext } from "./types.ts";
 -import type { ZipFileEntry } from "./zip-io.ts";
  import { contentTypeForExt } from "./image-assets.ts";
@@ -102,13 +689,13 @@ index a9885d0..df11ce1 100644
 +  });
  }
 diff --git a/src/ts/relationships.ts b/src/ts/relationships.ts
-index c27a29a..08cab40 100644
+index c27a29a..46e9bb9 100644
 --- a/src/ts/relationships.ts
 +++ b/src/ts/relationships.ts
 @@ -1,5 +1,5 @@
  import type { RenderContext, Relationship } from "./types.ts";
 -import { escapeAttr } from "./xml-utils.ts";
-+import { buildOpcRelationshipsXml, type OpcRelationship } from "miku-ms-office-core";
++import { buildOpcRelationshipsXml, type OpcRelationship } from "../vendor/miku-ms-office-core-0.5.0.mjs";
  
  export const REL_OFFICE_DOCUMENT = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
  export const REL_HYPERLINK = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink";
@@ -133,12 +720,12 @@ index c27a29a..08cab40 100644
 +  return buildOpcRelationshipsXml([...REQUIRED_DOCUMENT_RELATIONSHIPS, ...relationships]);
  }
 diff --git a/src/ts/types.ts b/src/ts/types.ts
-index 6f71657..6216900 100644
+index 6f71657..8af8fac 100644
 --- a/src/ts/types.ts
 +++ b/src/ts/types.ts
 @@ -1,4 +1,4 @@
 -import type { ZipFileEntry } from "./zip-io.ts";
-+import type { ZipEntryInput } from "miku-ms-office-core";
++import type { ZipEntryInput } from "../vendor/miku-ms-office-core-0.5.0.mjs";
  
  export interface ImageAsset {
    path: string;
@@ -151,6 +738,584 @@ index 6f71657..6216900 100644
    nextRelId: number;
    nextDocPrId: number;
    options: Md2DocxOptions;
+diff --git a/src/vendor/miku-ms-office-core-0.5.0.d.mts b/src/vendor/miku-ms-office-core-0.5.0.d.mts
+new file mode 100644
+index 0000000..4ef8ac0
+--- /dev/null
++++ b/src/vendor/miku-ms-office-core-0.5.0.d.mts
+@@ -0,0 +1,22 @@
++export interface ZipEntryInput {
++  path: string;
++  data: Uint8Array | string;
++  date?: Date;
++  compression?: "store" | "deflate";
++}
++
++export interface OpcRelationship {
++  id: string;
++  type: string;
++  target: string;
++  targetMode?: string;
++}
++
++export declare function buildOpcContentTypesXml(input: {
++  defaults?: Array<{ extension: string; contentType: string }>;
++  overrides?: Array<{ partName: string; contentType: string }>;
++}): string;
++
++export declare function buildOpcRelationshipsXml(relationships: OpcRelationship[]): string;
++
++export declare function writeZipPackage(entries: ZipEntryInput[]): Uint8Array;
+diff --git a/src/vendor/miku-ms-office-core-0.5.0.mjs b/src/vendor/miku-ms-office-core-0.5.0.mjs
+new file mode 100644
+index 0000000..521dd78
+--- /dev/null
++++ b/src/vendor/miku-ms-office-core-0.5.0.mjs
+@@ -0,0 +1,531 @@
++// Generated by miku-ms-office-core build:bundle.
++
++// src/ts/binary-io.ts
++var textEncoder = new TextEncoder();
++var textDecoder = new TextDecoder();
++function readUint16(data, offset) {
++  return data[offset] | data[offset + 1] << 8;
++}
++function readUint32(data, offset) {
++  return (data[offset] | data[offset + 1] << 8 | data[offset + 2] << 16 | data[offset + 3] << 24) >>> 0;
++}
++function writeUint16(buffer, offset, value) {
++  buffer[offset] = value & 255;
++  buffer[offset + 1] = value >>> 8 & 255;
++}
++function writeUint32(buffer, offset, value) {
++  buffer[offset] = value & 255;
++  buffer[offset + 1] = value >>> 8 & 255;
++  buffer[offset + 2] = value >>> 16 & 255;
++  buffer[offset + 3] = value >>> 24 & 255;
++}
++function concatBytes(parts) {
++  const total = parts.reduce((sum, part) => sum + part.length, 0);
++  const output = new Uint8Array(total);
++  let offset = 0;
++  for (const part of parts) {
++    output.set(part, offset);
++    offset += part.length;
++  }
++  return output;
++}
++function asBytes(data) {
++  return typeof data === "string" ? textEncoder.encode(data) : data;
++}
++
++// src/ts/diagnostics.ts
++function createDiagnostic(severity, code, message, path) {
++  return path === void 0 ? { severity, code, message } : { severity, code, message, path };
++}
++
++// src/ts/opc-part-path.ts
++function normalizeOpcPartPath(partPath) {
++  const withoutHash = partPath.split("#", 1)[0] ?? "";
++  const raw = withoutHash.replace(/\\/g, "/").replace(/^\/+/, "");
++  const parts = [];
++  for (const part of raw.split("/")) {
++    if (part === "" || part === ".") {
++      continue;
++    }
++    if (part === "..") {
++      if (parts.length === 0) {
++        throw new Error(`OPC part path escapes package root: ${partPath}`);
++      }
++      parts.pop();
++      continue;
++    }
++    parts.push(part);
++  }
++  if (parts.length === 0) {
++    throw new Error(`OPC part path is empty: ${partPath}`);
++  }
++  return parts.join("/");
++}
++function resolveOpcRelationshipTarget(sourcePartPath, target, targetMode = "") {
++  if (targetMode.toLowerCase() === "external") {
++    return target;
++  }
++  if (/^[a-z][a-z0-9+.-]*:/i.test(target)) {
++    return target;
++  }
++  if (target.startsWith("/")) {
++    return normalizeOpcPartPath(target);
++  }
++  const source = normalizeOpcPartPath(sourcePartPath);
++  const sourceDirectory = source.includes("/") ? source.slice(0, source.lastIndexOf("/")) : "";
++  return normalizeOpcPartPath(sourceDirectory === "" ? target : `${sourceDirectory}/${target}`);
++}
++function compareOpcPartPaths(a, b) {
++  return a < b ? -1 : a > b ? 1 : 0;
++}
++function buildOpcRelationshipsPath(sourcePartPath) {
++  const source = normalizeOpcPartPath(sourcePartPath);
++  const slashIndex = source.lastIndexOf("/");
++  const directory = slashIndex < 0 ? "" : source.slice(0, slashIndex);
++  const fileName = slashIndex < 0 ? source : source.slice(slashIndex + 1);
++  return directory === "" ? `_rels/${fileName}.rels` : `${directory}/_rels/${fileName}.rels`;
++}
++
++// src/ts/xml-helper.ts
++function escapeXmlText(value) {
++  return sanitizeXmlText(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
++}
++function escapeXmlAttribute(value) {
++  return escapeXmlText(value).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
++}
++function sanitizeXmlText(value) {
++  return value.replace(/[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD]/g, "");
++}
++function parseXmlAttributes(tag) {
++  const attributes = /* @__PURE__ */ new Map();
++  const pattern = /([A-Za-z_][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
++  for (const match of tag.matchAll(pattern)) {
++    attributes.set(match[1], decodeXmlEntities(match[2] ?? match[3] ?? ""));
++  }
++  return attributes;
++}
++function decodeXmlEntities(value) {
++  return value.replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
++}
++
++// src/ts/opc-content-types.ts
++function parseOpcContentTypesXml(xml) {
++  const defaults = [];
++  const overrides = [];
++  for (const match of xml.matchAll(/<Default\b([^>]*)\/?>/g)) {
++    const attributes = parseXmlAttributes(match[1] ?? "");
++    const extension = attributes.get("Extension");
++    const contentType = attributes.get("ContentType");
++    if (extension !== void 0 && contentType !== void 0) {
++      defaults.push({ extension, contentType });
++    }
++  }
++  for (const match of xml.matchAll(/<Override\b([^>]*)\/?>/g)) {
++    const attributes = parseXmlAttributes(match[1] ?? "");
++    const partName = attributes.get("PartName");
++    const contentType = attributes.get("ContentType");
++    if (partName !== void 0 && contentType !== void 0) {
++      overrides.push({ partName: normalizeOpcPartPath(partName), contentType });
++    }
++  }
++  return { defaults, overrides };
++}
++function resolveOpcContentType(contentTypes, partPath) {
++  const normalized = normalizeOpcPartPath(partPath);
++  const override = contentTypes.overrides.find((item) => item.partName === normalized);
++  if (override !== void 0) {
++    return override.contentType;
++  }
++  const extension = normalized.includes(".") ? normalized.slice(normalized.lastIndexOf(".") + 1) : "";
++  return contentTypes.defaults.find((item) => item.extension === extension)?.contentType;
++}
++function buildOpcContentTypesXml(contentTypes) {
++  const defaults = contentTypes.defaults.map((item) => `<Default Extension="${escapeXmlAttribute(item.extension)}" ContentType="${escapeXmlAttribute(item.contentType)}"/>`).join("");
++  const overrides = contentTypes.overrides.map((item) => `<Override PartName="/${escapeXmlAttribute(normalizeOpcPartPath(item.partName))}" ContentType="${escapeXmlAttribute(item.contentType)}"/>`).join("");
++  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">${defaults}${overrides}</Types>`;
++}
++
++// src/ts/opc-relationships.ts
++function parseOpcRelationshipsXml(xml) {
++  const relationships = [];
++  const pattern = /<Relationship\b([^>]*)\/?>/g;
++  for (const match of xml.matchAll(pattern)) {
++    const attributes = parseXmlAttributes(match[1] ?? "");
++    const id = attributes.get("Id");
++    const type = attributes.get("Type");
++    const target = attributes.get("Target");
++    if (id === void 0 || type === void 0 || target === void 0) {
++      continue;
++    }
++    const targetMode = attributes.get("TargetMode");
++    relationships.push(
++      targetMode === void 0 ? { id, type, target } : { id, type, target, targetMode }
++    );
++  }
++  return relationships;
++}
++function buildOpcRelationshipsXml(relationships) {
++  const rels = relationships.map((relationship) => {
++    const targetMode = relationship.targetMode === void 0 ? "" : ` TargetMode="${escapeXmlAttribute(relationship.targetMode)}"`;
++    return `<Relationship Id="${escapeXmlAttribute(relationship.id)}" Type="${escapeXmlAttribute(relationship.type)}" Target="${escapeXmlAttribute(relationship.target)}"${targetMode}/>`;
++  }).join("");
++  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${rels}</Relationships>`;
++}
++function resolveOpcRelationships(relationships, sourcePartPath) {
++  return relationships.map((relationship) => ({
++    ...relationship,
++    target: resolveOpcRelationshipTarget(sourcePartPath, relationship.target, relationship.targetMode)
++  }));
++}
++function relationshipArrayToMap(relationships) {
++  return new Map(relationships.map((relationship) => [relationship.id, relationship]));
++}
++
++// src/ts/zip-package.ts
++import { deflateRawSync, inflateRawSync } from "node:zlib";
++
++// src/ts/crc32.ts
++var crcTable = new Uint32Array(256);
++for (let i = 0; i < 256; i += 1) {
++  let c = i;
++  for (let k = 0; k < 8; k += 1) {
++    c = c & 1 ? 3988292384 ^ c >>> 1 : c >>> 1;
++  }
++  crcTable[i] = c >>> 0;
++}
++function crc32(data) {
++  let crc = 4294967295;
++  for (const value of data) {
++    crc = crcTable[(crc ^ value) & 255] ^ crc >>> 8;
++  }
++  return (crc ^ 4294967295) >>> 0;
++}
++
++// src/ts/zip-package.ts
++var EOCD_SIGNATURE = 101010256;
++var CENTRAL_DIRECTORY_SIGNATURE = 33639248;
++var LOCAL_FILE_SIGNATURE = 67324752;
++var FIXED_TIMESTAMP = new Date(Date.UTC(1980, 0, 1, 0, 0, 0));
++function getDefaultZipEntryTimestamp() {
++  return new Date(FIXED_TIMESTAMP.getTime());
++}
++function readZipPackage(data) {
++  const diagnostics = [];
++  const entries = [];
++  const centralDirectory = readCentralDirectory(data, diagnostics);
++  for (const central of centralDirectory) {
++    try {
++      const localNameLength = readUint16(data, central.localHeaderOffset + 26);
++      const localExtraLength = readUint16(data, central.localHeaderOffset + 28);
++      const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;
++      const compressed = data.slice(dataStart, dataStart + central.compressedSize);
++      const entryData = central.method === 0 ? compressed : inflateRawSync(compressed);
++      entries.push({
++        path: central.path,
++        data: new Uint8Array(entryData),
++        compression: central.method === 0 ? "store" : "deflate",
++        compressedSize: central.compressedSize,
++        uncompressedSize: central.uncompressedSize,
++        crc32: central.crc,
++        modifiedAt: central.modifiedAt
++      });
++    } catch (error) {
++      diagnostics.push(
++        createDiagnostic(
++          "error",
++          "zip.entry.read_failed",
++          error instanceof Error ? error.message : String(error),
++          central.path
++        )
++      );
++    }
++  }
++  return { entries, diagnostics };
++}
++async function readZipPackageAsync(data, options = {}) {
++  const diagnostics = [];
++  const entries = [];
++  const centralDirectory = readCentralDirectory(data, diagnostics);
++  for (const central of centralDirectory) {
++    try {
++      const localNameLength = readUint16(data, central.localHeaderOffset + 26);
++      const localExtraLength = readUint16(data, central.localHeaderOffset + 28);
++      const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;
++      const compressed = data.slice(dataStart, dataStart + central.compressedSize);
++      const entryData = central.method === 0 ? compressed : await inflateZipRawAsync(compressed, central.uncompressedSize, central.path, options.inflateRaw);
++      entries.push({
++        path: central.path,
++        data: new Uint8Array(entryData),
++        compression: central.method === 0 ? "store" : "deflate",
++        compressedSize: central.compressedSize,
++        uncompressedSize: central.uncompressedSize,
++        crc32: central.crc,
++        modifiedAt: central.modifiedAt
++      });
++    } catch (error) {
++      diagnostics.push(
++        createDiagnostic(
++          "error",
++          "zip.entry.read_failed",
++          error instanceof Error ? error.message : String(error),
++          central.path
++        )
++      );
++    }
++  }
++  return { entries, diagnostics };
++}
++function writeZipPackage(entries, options = {}) {
++  const timestamp = options.timestamp ?? FIXED_TIMESTAMP;
++  const compression = options.compression ?? "store";
++  const order = options.order ?? "stable";
++  const prepared = entries.map((entry) => ({
++    path: normalizeOpcPartPath(entry.path),
++    data: asBytes(entry.data),
++    compression: entry.compression ?? compression,
++    modifiedAt: entry.modifiedAt ?? timestamp
++  }));
++  if (order === "stable") {
++    prepared.sort((a, b) => compareOpcPartPaths(a.path, b.path));
++  }
++  const localParts = [];
++  const centralParts = [];
++  let offset = 0;
++  for (const entry of prepared) {
++    const nameBytes = textEncoder.encode(entry.path);
++    const method = entry.compression === "store" ? 0 : 8;
++    const compressed = entry.compression === "store" ? entry.data : new Uint8Array(deflateRawSync(entry.data, { level: options.compressionLevel ?? 9 }));
++    const crc = crc32(entry.data);
++    const dosTime = toDosTime(entry.modifiedAt);
++    const dosDate = toDosDate(entry.modifiedAt);
++    const localHeader = new Uint8Array(30 + nameBytes.length);
++    writeUint32(localHeader, 0, LOCAL_FILE_SIGNATURE);
++    writeUint16(localHeader, 4, 20);
++    writeUint16(localHeader, 6, 2048);
++    writeUint16(localHeader, 8, method);
++    writeUint16(localHeader, 10, dosTime);
++    writeUint16(localHeader, 12, dosDate);
++    writeUint32(localHeader, 14, crc);
++    writeUint32(localHeader, 18, compressed.length);
++    writeUint32(localHeader, 22, entry.data.length);
++    writeUint16(localHeader, 26, nameBytes.length);
++    writeUint16(localHeader, 28, 0);
++    localHeader.set(nameBytes, 30);
++    localParts.push(localHeader, compressed);
++    const centralHeader = new Uint8Array(46 + nameBytes.length);
++    writeUint32(centralHeader, 0, CENTRAL_DIRECTORY_SIGNATURE);
++    writeUint16(centralHeader, 4, 20);
++    writeUint16(centralHeader, 6, 20);
++    writeUint16(centralHeader, 8, 2048);
++    writeUint16(centralHeader, 10, method);
++    writeUint16(centralHeader, 12, dosTime);
++    writeUint16(centralHeader, 14, dosDate);
++    writeUint32(centralHeader, 16, crc);
++    writeUint32(centralHeader, 20, compressed.length);
++    writeUint32(centralHeader, 24, entry.data.length);
++    writeUint16(centralHeader, 28, nameBytes.length);
++    writeUint16(centralHeader, 30, 0);
++    writeUint16(centralHeader, 32, 0);
++    writeUint16(centralHeader, 34, 0);
++    writeUint16(centralHeader, 36, 0);
++    writeUint32(centralHeader, 38, 0);
++    writeUint32(centralHeader, 42, offset);
++    centralHeader.set(nameBytes, 46);
++    centralParts.push(centralHeader);
++    offset += localHeader.length + compressed.length;
++  }
++  const centralDirectory = concatBytes(centralParts);
++  const end = new Uint8Array(22);
++  writeUint32(end, 0, EOCD_SIGNATURE);
++  writeUint16(end, 4, 0);
++  writeUint16(end, 6, 0);
++  writeUint16(end, 8, prepared.length);
++  writeUint16(end, 10, prepared.length);
++  writeUint32(end, 12, centralDirectory.length);
++  writeUint32(end, 16, offset);
++  writeUint16(end, 20, 0);
++  return concatBytes([...localParts, centralDirectory, end]);
++}
++function getZipEntry(entries, entryPath) {
++  const normalized = normalizeOpcPartPath(entryPath);
++  return entries.find((entry) => entry.path === normalized);
++}
++function getZipTextEntry(entries, entryPath) {
++  const entry = getZipEntry(entries, entryPath);
++  return entry === void 0 ? void 0 : textDecoder.decode(entry.data);
++}
++function upsertZipEntry(entries, entry) {
++  const normalized = normalizeOpcPartPath(entry.path);
++  const next = entries.filter((item) => normalizeOpcPartPath(item.path) !== normalized);
++  next.push({ ...entry, path: normalized });
++  return next;
++}
++function readCentralDirectory(data, diagnostics) {
++  const eocdOffset = findEndOfCentralDirectory(data);
++  if (eocdOffset < 0) {
++    diagnostics.push(createDiagnostic("error", "zip.eocd.missing", "End of central directory was not found."));
++    return [];
++  }
++  const entryCount = readUint16(data, eocdOffset + 10);
++  const centralDirectoryOffset = readUint32(data, eocdOffset + 16);
++  const entries = [];
++  let offset = centralDirectoryOffset;
++  for (let index = 0; index < entryCount; index += 1) {
++    if (readUint32(data, offset) !== CENTRAL_DIRECTORY_SIGNATURE) {
++      diagnostics.push(createDiagnostic("error", "zip.central_directory.invalid", "Central directory entry signature is invalid."));
++      break;
++    }
++    const flags = readUint16(data, offset + 8);
++    const method = readUint16(data, offset + 10);
++    const time = readUint16(data, offset + 12);
++    const date = readUint16(data, offset + 14);
++    const crc = readUint32(data, offset + 16);
++    const compressedSize = readUint32(data, offset + 20);
++    const uncompressedSize = readUint32(data, offset + 24);
++    const fileNameLength = readUint16(data, offset + 28);
++    const extraLength = readUint16(data, offset + 30);
++    const commentLength = readUint16(data, offset + 32);
++    const localHeaderOffset = readUint32(data, offset + 42);
++    const nameStart = offset + 46;
++    const path = textDecoder.decode(data.slice(nameStart, nameStart + fileNameLength));
++    if (method !== 0 && method !== 8) {
++      diagnostics.push(createDiagnostic("error", "zip.compression.unsupported", `Unsupported ZIP compression method: ${method}`, path));
++    } else {
++      entries.push({
++        path: normalizeOpcPartPath(path),
++        method,
++        flags,
++        crc,
++        compressedSize,
++        uncompressedSize,
++        localHeaderOffset,
++        modifiedAt: fromDosDateTime(date, time)
++      });
++    }
++    offset = nameStart + fileNameLength + extraLength + commentLength;
++  }
++  return entries;
++}
++function findEndOfCentralDirectory(data) {
++  const minOffset = Math.max(0, data.length - 65535 - 22);
++  for (let offset = data.length - 22; offset >= minOffset; offset -= 1) {
++    if (readUint32(data, offset) === EOCD_SIGNATURE) {
++      return offset;
++    }
++  }
++  return -1;
++}
++function toDosTime(date) {
++  return date.getUTCHours() << 11 | date.getUTCMinutes() << 5 | Math.floor(date.getUTCSeconds() / 2);
++}
++function toDosDate(date) {
++  const year = Math.max(1980, date.getUTCFullYear());
++  return year - 1980 << 9 | date.getUTCMonth() + 1 << 5 | date.getUTCDate();
++}
++function fromDosDateTime(date, time) {
++  const year = 1980 + (date >>> 9 & 127);
++  const month = date >>> 5 & 15;
++  const day = date & 31;
++  const hour = time >>> 11 & 31;
++  const minute = time >>> 5 & 63;
++  const second = (time & 31) * 2;
++  return new Date(Date.UTC(year, month - 1, day, hour, minute, second));
++}
++async function inflateZipRawAsync(compressed, expectedSize, path, customInflateRaw) {
++  const inflated = customInflateRaw === void 0 ? await defaultInflateZipRawAsync(compressed) : await customInflateRaw(compressed, expectedSize, path);
++  const bytes = new Uint8Array(inflated);
++  if (bytes.length !== expectedSize) {
++    throw new Error(`Deflated ZIP entry size mismatch: ${path}`);
++  }
++  return bytes;
++}
++async function defaultInflateZipRawAsync(compressed) {
++  const runtime = globalThis;
++  if (typeof runtime.DecompressionStream === "function") {
++    try {
++      const stream = new Blob([compressed]).stream().pipeThrough(new runtime.DecompressionStream("deflate-raw"));
++      const buffer = await new Response(stream).arrayBuffer();
++      return new Uint8Array(buffer);
++    } catch (_error) {
++    }
++  }
++  return new Uint8Array(inflateRawSync(compressed));
++}
++
++// src/ts/office-package.ts
++function readOfficePackage(data) {
++  const zip = readZipPackage(data);
++  return buildOfficePackageFromZipReadResult(zip.entries, zip.diagnostics);
++}
++async function readOfficePackageAsync(data, options = {}) {
++  const zip = await readZipPackageAsync(data, options);
++  return buildOfficePackageFromZipReadResult(zip.entries, zip.diagnostics);
++}
++function buildOfficePackageFromZipReadResult(entries, zipDiagnostics) {
++  const diagnostics = [...zipDiagnostics];
++  const contentTypesXml = getZipTextEntry(entries, "[Content_Types].xml");
++  let contentTypes;
++  if (contentTypesXml === void 0) {
++    diagnostics.push(
++      createDiagnostic(
++        "warning",
++        "opc.content_types.missing",
++        "The package does not contain [Content_Types].xml.",
++        "[Content_Types].xml"
++      )
++    );
++  } else {
++    contentTypes = parseOpcContentTypesXml(contentTypesXml);
++  }
++  return contentTypes === void 0 ? { entries, diagnostics } : { entries, contentTypes, diagnostics };
++}
++function listOfficeMediaParts(entries) {
++  return entries.filter((entry) => normalizeOpcPartPath(entry.path).includes("/media/"));
++}
++function readOfficePartRelationships(entries, sourcePartPath, options = {}) {
++  const relsXml = getZipTextEntry(entries, buildOpcRelationshipsPath(sourcePartPath));
++  if (relsXml === void 0) {
++    return [];
++  }
++  const relationships = parseOpcRelationshipsXml(relsXml);
++  return options.resolveTargets === false ? relationships : resolveOpcRelationships(relationships, sourcePartPath);
++}
++export {
++  asBytes,
++  buildOpcContentTypesXml,
++  buildOpcRelationshipsPath,
++  buildOpcRelationshipsXml,
++  compareOpcPartPaths,
++  concatBytes,
++  createDiagnostic,
++  decodeXmlEntities,
++  escapeXmlAttribute,
++  escapeXmlText,
++  getDefaultZipEntryTimestamp,
++  getZipEntry,
++  getZipTextEntry,
++  listOfficeMediaParts,
++  normalizeOpcPartPath,
++  parseOpcContentTypesXml,
++  parseOpcRelationshipsXml,
++  parseXmlAttributes,
++  readOfficePackage,
++  readOfficePackageAsync,
++  readOfficePartRelationships,
++  readUint16,
++  readUint32,
++  readZipPackage,
++  readZipPackageAsync,
++  relationshipArrayToMap,
++  resolveOpcContentType,
++  resolveOpcRelationshipTarget,
++  resolveOpcRelationships,
++  sanitizeXmlText,
++  textDecoder,
++  textEncoder,
++  upsertZipEntry,
++  writeUint16,
++  writeUint32,
++  writeZipPackage
++};
++//# sourceMappingURL=miku-ms-office-core.mjs.map
+diff --git a/src/vendor/miku-ms-office-core.mjs.map b/src/vendor/miku-ms-office-core.mjs.map
+new file mode 100644
+index 0000000..86d1b3c
+--- /dev/null
++++ b/src/vendor/miku-ms-office-core.mjs.map
+@@ -0,0 +1,7 @@
++{
++  "version": 3,
++  "sources": ["../src/ts/binary-io.ts", "../src/ts/diagnostics.ts", "../src/ts/opc-part-path.ts", "../src/ts/xml-helper.ts", "../src/ts/opc-content-types.ts", "../src/ts/opc-relationships.ts", "../src/ts/zip-package.ts", "../src/ts/crc32.ts", "../src/ts/office-package.ts"],
++  "sourcesContent": ["export const textEncoder = new TextEncoder();\nexport const textDecoder = new TextDecoder();\n\nexport function readUint16(data: Uint8Array, offset: number): number {\n  return data[offset] | (data[offset + 1] << 8);\n}\n\nexport function readUint32(data: Uint8Array, offset: number): number {\n  return (\n    data[offset] |\n    (data[offset + 1] << 8) |\n    (data[offset + 2] << 16) |\n    (data[offset + 3] << 24)\n  ) >>> 0;\n}\n\nexport function writeUint16(buffer: Uint8Array, offset: number, value: number): void {\n  buffer[offset] = value & 0xff;\n  buffer[offset + 1] = (value >>> 8) & 0xff;\n}\n\nexport function writeUint32(buffer: Uint8Array, offset: number, value: number): void {\n  buffer[offset] = value & 0xff;\n  buffer[offset + 1] = (value >>> 8) & 0xff;\n  buffer[offset + 2] = (value >>> 16) & 0xff;\n  buffer[offset + 3] = (value >>> 24) & 0xff;\n}\n\nexport function concatBytes(parts: Uint8Array[]): Uint8Array {\n  const total = parts.reduce((sum, part) => sum + part.length, 0);\n  const output = new Uint8Array(total);\n  let offset = 0;\n  for (const part of parts) {\n    output.set(part, offset);\n    offset += part.length;\n  }\n  return output;\n}\n\nexport function asBytes(data: Uint8Array | string): Uint8Array {\n  return typeof data === \"string\" ? textEncoder.encode(data) : data;\n}\n", "export type DiagnosticSeverity = \"info\" | \"warning\" | \"error\";\n\nexport interface OfficeDiagnostic {\n  severity: DiagnosticSeverity;\n  code: string;\n  message: string;\n  path?: string;\n}\n\nexport function createDiagnostic(\n  severity: DiagnosticSeverity,\n  code: string,\n  message: string,\n  path?: string\n): OfficeDiagnostic {\n  return path === undefined ? { severity, code, message } : { severity, code, message, path };\n}\n", "export type OpcPartPath = string;\n\nexport function normalizeOpcPartPath(partPath: string): OpcPartPath {\n  const withoutHash = partPath.split(\"#\", 1)[0] ?? \"\";\n  const raw = withoutHash.replace(/\\\\/g, \"/\").replace(/^\\/+/, \"\");\n  const parts: string[] = [];\n\n  for (const part of raw.split(\"/\")) {\n    if (part === \"\" || part === \".\") {\n      continue;\n    }\n    if (part === \"..\") {\n      if (parts.length === 0) {\n        throw new Error(`OPC part path escapes package root: ${partPath}`);\n      }\n      parts.pop();\n      continue;\n    }\n    parts.push(part);\n  }\n\n  if (parts.length === 0) {\n    throw new Error(`OPC part path is empty: ${partPath}`);\n  }\n  return parts.join(\"/\");\n}\n\nexport function resolveOpcRelationshipTarget(\n  sourcePartPath: string,\n  target: string,\n  targetMode = \"\"\n): string {\n  if (targetMode.toLowerCase() === \"external\") {\n    return target;\n  }\n  if (/^[a-z][a-z0-9+.-]*:/i.test(target)) {\n    return target;\n  }\n  if (target.startsWith(\"/\")) {\n    return normalizeOpcPartPath(target);\n  }\n\n  const source = normalizeOpcPartPath(sourcePartPath);\n  const sourceDirectory = source.includes(\"/\") ? source.slice(0, source.lastIndexOf(\"/\")) : \"\";\n  return normalizeOpcPartPath(sourceDirectory === \"\" ? target : `${sourceDirectory}/${target}`);\n}\n\nexport function compareOpcPartPaths(a: string, b: string): number {\n  return a < b ? -1 : a > b ? 1 : 0;\n}\n\nexport function buildOpcRelationshipsPath(sourcePartPath: string): string {\n  const source = normalizeOpcPartPath(sourcePartPath);\n  const slashIndex = source.lastIndexOf(\"/\");\n  const directory = slashIndex < 0 ? \"\" : source.slice(0, slashIndex);\n  const fileName = slashIndex < 0 ? source : source.slice(slashIndex + 1);\n  return directory === \"\" ? `_rels/${fileName}.rels` : `${directory}/_rels/${fileName}.rels`;\n}\n", "export function escapeXmlText(value: string): string {\n  return sanitizeXmlText(value)\n    .replace(/&/g, \"&amp;\")\n    .replace(/</g, \"&lt;\")\n    .replace(/>/g, \"&gt;\");\n}\n\nexport function escapeXmlAttribute(value: string): string {\n  return escapeXmlText(value).replace(/\"/g, \"&quot;\").replace(/'/g, \"&apos;\");\n}\n\nexport function sanitizeXmlText(value: string): string {\n  return value.replace(/[^\\u0009\\u000A\\u000D\\u0020-\\uD7FF\\uE000-\\uFFFD]/g, \"\");\n}\n\nexport function parseXmlAttributes(tag: string): Map<string, string> {\n  const attributes = new Map<string, string>();\n  const pattern = /([A-Za-z_][\\w:.-]*)\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)')/g;\n  for (const match of tag.matchAll(pattern)) {\n    attributes.set(match[1], decodeXmlEntities(match[2] ?? match[3] ?? \"\"));\n  }\n  return attributes;\n}\n\nexport function decodeXmlEntities(value: string): string {\n  return value\n    .replace(/&quot;/g, \"\\\"\")\n    .replace(/&apos;/g, \"'\")\n    .replace(/&lt;/g, \"<\")\n    .replace(/&gt;/g, \">\")\n    .replace(/&amp;/g, \"&\");\n}\n", "import { normalizeOpcPartPath } from \"./opc-part-path.js\";\nimport { escapeXmlAttribute, parseXmlAttributes } from \"./xml-helper.js\";\n\nexport interface OpcContentTypeDefault {\n  extension: string;\n  contentType: string;\n}\n\nexport interface OpcContentTypeOverride {\n  partName: string;\n  contentType: string;\n}\n\nexport interface OpcContentTypes {\n  defaults: OpcContentTypeDefault[];\n  overrides: OpcContentTypeOverride[];\n}\n\nexport function parseOpcContentTypesXml(xml: string): OpcContentTypes {\n  const defaults: OpcContentTypeDefault[] = [];\n  const overrides: OpcContentTypeOverride[] = [];\n\n  for (const match of xml.matchAll(/<Default\\b([^>]*)\\/?>/g)) {\n    const attributes = parseXmlAttributes(match[1] ?? \"\");\n    const extension = attributes.get(\"Extension\");\n    const contentType = attributes.get(\"ContentType\");\n    if (extension !== undefined && contentType !== undefined) {\n      defaults.push({ extension, contentType });\n    }\n  }\n\n  for (const match of xml.matchAll(/<Override\\b([^>]*)\\/?>/g)) {\n    const attributes = parseXmlAttributes(match[1] ?? \"\");\n    const partName = attributes.get(\"PartName\");\n    const contentType = attributes.get(\"ContentType\");\n    if (partName !== undefined && contentType !== undefined) {\n      overrides.push({ partName: normalizeOpcPartPath(partName), contentType });\n    }\n  }\n\n  return { defaults, overrides };\n}\n\nexport function resolveOpcContentType(contentTypes: OpcContentTypes, partPath: string): string | undefined {\n  const normalized = normalizeOpcPartPath(partPath);\n  const override = contentTypes.overrides.find((item) => item.partName === normalized);\n  if (override !== undefined) {\n    return override.contentType;\n  }\n\n  const extension = normalized.includes(\".\") ? normalized.slice(normalized.lastIndexOf(\".\") + 1) : \"\";\n  return contentTypes.defaults.find((item) => item.extension === extension)?.contentType;\n}\n\nexport function buildOpcContentTypesXml(contentTypes: OpcContentTypes): string {\n  const defaults = contentTypes.defaults.map((item) => (\n    `<Default Extension=\"${escapeXmlAttribute(item.extension)}\" ContentType=\"${escapeXmlAttribute(item.contentType)}\"/>`\n  )).join(\"\");\n  const overrides = contentTypes.overrides.map((item) => (\n    `<Override PartName=\"/${escapeXmlAttribute(normalizeOpcPartPath(item.partName))}\" ContentType=\"${escapeXmlAttribute(item.contentType)}\"/>`\n  )).join(\"\");\n  return `<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">${defaults}${overrides}</Types>`;\n}\n", "import { normalizeOpcPartPath, resolveOpcRelationshipTarget } from \"./opc-part-path.js\";\nimport { escapeXmlAttribute, parseXmlAttributes } from \"./xml-helper.js\";\n\nexport interface OpcRelationship {\n  id: string;\n  type: string;\n  target: string;\n  targetMode?: string;\n}\n\nexport function parseOpcRelationshipsXml(xml: string): OpcRelationship[] {\n  const relationships: OpcRelationship[] = [];\n  const pattern = /<Relationship\\b([^>]*)\\/?>/g;\n\n  for (const match of xml.matchAll(pattern)) {\n    const attributes = parseXmlAttributes(match[1] ?? \"\");\n    const id = attributes.get(\"Id\");\n    const type = attributes.get(\"Type\");\n    const target = attributes.get(\"Target\");\n    if (id === undefined || type === undefined || target === undefined) {\n      continue;\n    }\n\n    const targetMode = attributes.get(\"TargetMode\");\n    relationships.push(\n      targetMode === undefined ? { id, type, target } : { id, type, target, targetMode }\n    );\n  }\n\n  return relationships;\n}\n\nexport function buildOpcRelationshipsXml(relationships: OpcRelationship[]): string {\n  const rels = relationships.map((relationship) => {\n    const targetMode = relationship.targetMode === undefined\n      ? \"\"\n      : ` TargetMode=\"${escapeXmlAttribute(relationship.targetMode)}\"`;\n    return `<Relationship Id=\"${escapeXmlAttribute(relationship.id)}\" Type=\"${escapeXmlAttribute(relationship.type)}\" Target=\"${escapeXmlAttribute(relationship.target)}\"${targetMode}/>`;\n  }).join(\"\");\n  return `<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">${rels}</Relationships>`;\n}\n\nexport function resolveOpcRelationships(\n  relationships: OpcRelationship[],\n  sourcePartPath: string\n): OpcRelationship[] {\n  return relationships.map((relationship) => ({\n    ...relationship,\n    target: resolveOpcRelationshipTarget(sourcePartPath, relationship.target, relationship.targetMode)\n  }));\n}\n\nexport function relationshipArrayToMap(relationships: OpcRelationship[]): Map<string, OpcRelationship> {\n  return new Map(relationships.map((relationship) => [relationship.id, relationship]));\n}\n", "import { deflateRawSync, inflateRawSync } from \"node:zlib\";\nimport { asBytes, concatBytes, readUint16, readUint32, textDecoder, textEncoder, writeUint16, writeUint32 } from \"./binary-io.js\";\nimport { crc32 } from \"./crc32.js\";\nimport { createDiagnostic, type OfficeDiagnostic } from \"./diagnostics.js\";\nimport { compareOpcPartPaths, normalizeOpcPartPath } from \"./opc-part-path.js\";\n\nexport type ZipCompressionMethod = \"store\" | \"deflate\";\n\nexport interface ZipEntryInput {\n  path: string;\n  data: Uint8Array | string;\n  compression?: ZipCompressionMethod;\n  modifiedAt?: Date;\n}\n\nexport interface ZipEntry {\n  path: string;\n  data: Uint8Array;\n  compression: ZipCompressionMethod;\n  compressedSize: number;\n  uncompressedSize: number;\n  crc32: number;\n  modifiedAt: Date;\n}\n\nexport interface ZipReadResult {\n  entries: ZipEntry[];\n  diagnostics: OfficeDiagnostic[];\n}\n\nexport interface ZipReadOptions {\n  inflateRaw?: (data: Uint8Array, expectedSize: number, path: string) => Uint8Array | Promise<Uint8Array>;\n}\n\nexport interface ZipWriteOptions {\n  timestamp?: Date;\n  compression?: ZipCompressionMethod;\n  order?: \"stable\" | \"input\";\n  compressionLevel?: number;\n}\n\ninterface CentralDirectoryEntry {\n  path: string;\n  method: number;\n  flags: number;\n  crc: number;\n  compressedSize: number;\n  uncompressedSize: number;\n  localHeaderOffset: number;\n  modifiedAt: Date;\n}\n\nconst EOCD_SIGNATURE = 0x06054b50;\nconst CENTRAL_DIRECTORY_SIGNATURE = 0x02014b50;\nconst LOCAL_FILE_SIGNATURE = 0x04034b50;\nconst FIXED_TIMESTAMP = new Date(Date.UTC(1980, 0, 1, 0, 0, 0));\n\nexport function getDefaultZipEntryTimestamp(): Date {\n  return new Date(FIXED_TIMESTAMP.getTime());\n}\n\nexport function readZipPackage(data: Uint8Array): ZipReadResult {\n  const diagnostics: OfficeDiagnostic[] = [];\n  const entries: ZipEntry[] = [];\n  const centralDirectory = readCentralDirectory(data, diagnostics);\n\n  for (const central of centralDirectory) {\n    try {\n      const localNameLength = readUint16(data, central.localHeaderOffset + 26);\n      const localExtraLength = readUint16(data, central.localHeaderOffset + 28);\n      const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;\n      const compressed = data.slice(dataStart, dataStart + central.compressedSize);\n      const entryData =\n        central.method === 0 ? compressed : inflateRawSync(compressed);\n\n      entries.push({\n        path: central.path,\n        data: new Uint8Array(entryData),\n        compression: central.method === 0 ? \"store\" : \"deflate\",\n        compressedSize: central.compressedSize,\n        uncompressedSize: central.uncompressedSize,\n        crc32: central.crc,\n        modifiedAt: central.modifiedAt\n      });\n    } catch (error) {\n      diagnostics.push(\n        createDiagnostic(\n          \"error\",\n          \"zip.entry.read_failed\",\n          error instanceof Error ? error.message : String(error),\n          central.path\n        )\n      );\n    }\n  }\n\n  return { entries, diagnostics };\n}\n\nexport async function readZipPackageAsync(\n  data: Uint8Array,\n  options: ZipReadOptions = {}\n): Promise<ZipReadResult> {\n  const diagnostics: OfficeDiagnostic[] = [];\n  const entries: ZipEntry[] = [];\n  const centralDirectory = readCentralDirectory(data, diagnostics);\n\n  for (const central of centralDirectory) {\n    try {\n      const localNameLength = readUint16(data, central.localHeaderOffset + 26);\n      const localExtraLength = readUint16(data, central.localHeaderOffset + 28);\n      const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;\n      const compressed = data.slice(dataStart, dataStart + central.compressedSize);\n      const entryData = central.method === 0\n        ? compressed\n        : await inflateZipRawAsync(compressed, central.uncompressedSize, central.path, options.inflateRaw);\n\n      entries.push({\n        path: central.path,\n        data: new Uint8Array(entryData),\n        compression: central.method === 0 ? \"store\" : \"deflate\",\n        compressedSize: central.compressedSize,\n        uncompressedSize: central.uncompressedSize,\n        crc32: central.crc,\n        modifiedAt: central.modifiedAt\n      });\n    } catch (error) {\n      diagnostics.push(\n        createDiagnostic(\n          \"error\",\n          \"zip.entry.read_failed\",\n          error instanceof Error ? error.message : String(error),\n          central.path\n        )\n      );\n    }\n  }\n\n  return { entries, diagnostics };\n}\n\nexport function writeZipPackage(entries: ZipEntryInput[], options: ZipWriteOptions = {}): Uint8Array {\n  const timestamp = options.timestamp ?? FIXED_TIMESTAMP;\n  const compression = options.compression ?? \"store\";\n  const order = options.order ?? \"stable\";\n  const prepared = entries.map((entry) => ({\n    path: normalizeOpcPartPath(entry.path),\n    data: asBytes(entry.data),\n    compression: entry.compression ?? compression,\n    modifiedAt: entry.modifiedAt ?? timestamp\n  }));\n\n  if (order === \"stable\") {\n    prepared.sort((a, b) => compareOpcPartPaths(a.path, b.path));\n  }\n\n  const localParts: Uint8Array[] = [];\n  const centralParts: Uint8Array[] = [];\n  let offset = 0;\n\n  for (const entry of prepared) {\n    const nameBytes = textEncoder.encode(entry.path);\n    const method = entry.compression === \"store\" ? 0 : 8;\n    const compressed =\n      entry.compression === \"store\"\n        ? entry.data\n        : new Uint8Array(deflateRawSync(entry.data, { level: options.compressionLevel ?? 9 }));\n    const crc = crc32(entry.data);\n    const dosTime = toDosTime(entry.modifiedAt);\n    const dosDate = toDosDate(entry.modifiedAt);\n    const localHeader = new Uint8Array(30 + nameBytes.length);\n\n    writeUint32(localHeader, 0, LOCAL_FILE_SIGNATURE);\n    writeUint16(localHeader, 4, 20);\n    writeUint16(localHeader, 6, 0x0800);\n    writeUint16(localHeader, 8, method);\n    writeUint16(localHeader, 10, dosTime);\n    writeUint16(localHeader, 12, dosDate);\n    writeUint32(localHeader, 14, crc);\n    writeUint32(localHeader, 18, compressed.length);\n    writeUint32(localHeader, 22, entry.data.length);\n    writeUint16(localHeader, 26, nameBytes.length);\n    writeUint16(localHeader, 28, 0);\n    localHeader.set(nameBytes, 30);\n\n    localParts.push(localHeader, compressed);\n\n    const centralHeader = new Uint8Array(46 + nameBytes.length);\n    writeUint32(centralHeader, 0, CENTRAL_DIRECTORY_SIGNATURE);\n    writeUint16(centralHeader, 4, 20);\n    writeUint16(centralHeader, 6, 20);\n    writeUint16(centralHeader, 8, 0x0800);\n    writeUint16(centralHeader, 10, method);\n    writeUint16(centralHeader, 12, dosTime);\n    writeUint16(centralHeader, 14, dosDate);\n    writeUint32(centralHeader, 16, crc);\n    writeUint32(centralHeader, 20, compressed.length);\n    writeUint32(centralHeader, 24, entry.data.length);\n    writeUint16(centralHeader, 28, nameBytes.length);\n    writeUint16(centralHeader, 30, 0);\n    writeUint16(centralHeader, 32, 0);\n    writeUint16(centralHeader, 34, 0);\n    writeUint16(centralHeader, 36, 0);\n    writeUint32(centralHeader, 38, 0);\n    writeUint32(centralHeader, 42, offset);\n    centralHeader.set(nameBytes, 46);\n    centralParts.push(centralHeader);\n\n    offset += localHeader.length + compressed.length;\n  }\n\n  const centralDirectory = concatBytes(centralParts);\n  const end = new Uint8Array(22);\n  writeUint32(end, 0, EOCD_SIGNATURE);\n  writeUint16(end, 4, 0);\n  writeUint16(end, 6, 0);\n  writeUint16(end, 8, prepared.length);\n  writeUint16(end, 10, prepared.length);\n  writeUint32(end, 12, centralDirectory.length);\n  writeUint32(end, 16, offset);\n  writeUint16(end, 20, 0);\n\n  return concatBytes([...localParts, centralDirectory, end]);\n}\n\nexport function getZipEntry(entries: ZipEntry[], entryPath: string): ZipEntry | undefined {\n  const normalized = normalizeOpcPartPath(entryPath);\n  return entries.find((entry) => entry.path === normalized);\n}\n\nexport function getZipTextEntry(entries: ZipEntry[], entryPath: string): string | undefined {\n  const entry = getZipEntry(entries, entryPath);\n  return entry === undefined ? undefined : textDecoder.decode(entry.data);\n}\n\nexport function upsertZipEntry(\n  entries: ZipEntryInput[],\n  entry: ZipEntryInput\n): ZipEntryInput[] {\n  const normalized = normalizeOpcPartPath(entry.path);\n  const next = entries.filter((item) => normalizeOpcPartPath(item.path) !== normalized);\n  next.push({ ...entry, path: normalized });\n  return next;\n}\n\nfunction readCentralDirectory(data: Uint8Array, diagnostics: OfficeDiagnostic[]): CentralDirectoryEntry[] {\n  const eocdOffset = findEndOfCentralDirectory(data);\n  if (eocdOffset < 0) {\n    diagnostics.push(createDiagnostic(\"error\", \"zip.eocd.missing\", \"End of central directory was not found.\"));\n    return [];\n  }\n\n  const entryCount = readUint16(data, eocdOffset + 10);\n  const centralDirectoryOffset = readUint32(data, eocdOffset + 16);\n  const entries: CentralDirectoryEntry[] = [];\n  let offset = centralDirectoryOffset;\n\n  for (let index = 0; index < entryCount; index += 1) {\n    if (readUint32(data, offset) !== CENTRAL_DIRECTORY_SIGNATURE) {\n      diagnostics.push(createDiagnostic(\"error\", \"zip.central_directory.invalid\", \"Central directory entry signature is invalid.\"));\n      break;\n    }\n\n    const flags = readUint16(data, offset + 8);\n    const method = readUint16(data, offset + 10);\n    const time = readUint16(data, offset + 12);\n    const date = readUint16(data, offset + 14);\n    const crc = readUint32(data, offset + 16);\n    const compressedSize = readUint32(data, offset + 20);\n    const uncompressedSize = readUint32(data, offset + 24);\n    const fileNameLength = readUint16(data, offset + 28);\n    const extraLength = readUint16(data, offset + 30);\n    const commentLength = readUint16(data, offset + 32);\n    const localHeaderOffset = readUint32(data, offset + 42);\n    const nameStart = offset + 46;\n    const path = textDecoder.decode(data.slice(nameStart, nameStart + fileNameLength));\n\n    if (method !== 0 && method !== 8) {\n      diagnostics.push(createDiagnostic(\"error\", \"zip.compression.unsupported\", `Unsupported ZIP compression method: ${method}`, path));\n    } else {\n      entries.push({\n        path: normalizeOpcPartPath(path),\n        method,\n        flags,\n        crc,\n        compressedSize,\n        uncompressedSize,\n        localHeaderOffset,\n        modifiedAt: fromDosDateTime(date, time)\n      });\n    }\n\n    offset = nameStart + fileNameLength + extraLength + commentLength;\n  }\n\n  return entries;\n}\n\nfunction findEndOfCentralDirectory(data: Uint8Array): number {\n  const minOffset = Math.max(0, data.length - 0xffff - 22);\n  for (let offset = data.length - 22; offset >= minOffset; offset -= 1) {\n    if (readUint32(data, offset) === EOCD_SIGNATURE) {\n      return offset;\n    }\n  }\n  return -1;\n}\n\nfunction toDosTime(date: Date): number {\n  return (date.getUTCHours() << 11) | (date.getUTCMinutes() << 5) | Math.floor(date.getUTCSeconds() / 2);\n}\n\nfunction toDosDate(date: Date): number {\n  const year = Math.max(1980, date.getUTCFullYear());\n  return ((year - 1980) << 9) | ((date.getUTCMonth() + 1) << 5) | date.getUTCDate();\n}\n\nfunction fromDosDateTime(date: number, time: number): Date {\n  const year = 1980 + ((date >>> 9) & 0x7f);\n  const month = (date >>> 5) & 0x0f;\n  const day = date & 0x1f;\n  const hour = (time >>> 11) & 0x1f;\n  const minute = (time >>> 5) & 0x3f;\n  const second = (time & 0x1f) * 2;\n  return new Date(Date.UTC(year, month - 1, day, hour, minute, second));\n}\n\nasync function inflateZipRawAsync(\n  compressed: Uint8Array,\n  expectedSize: number,\n  path: string,\n  customInflateRaw?: ZipReadOptions[\"inflateRaw\"]\n): Promise<Uint8Array> {\n  const inflated = customInflateRaw === undefined\n    ? await defaultInflateZipRawAsync(compressed)\n    : await customInflateRaw(compressed, expectedSize, path);\n  const bytes = new Uint8Array(inflated);\n  if (bytes.length !== expectedSize) {\n    throw new Error(`Deflated ZIP entry size mismatch: ${path}`);\n  }\n  return bytes;\n}\n\nasync function defaultInflateZipRawAsync(compressed: Uint8Array): Promise<Uint8Array> {\n  const runtime = globalThis as typeof globalThis & {\n    DecompressionStream?: new (format: string) => TransformStream<Uint8Array, Uint8Array>;\n  };\n\n  if (typeof runtime.DecompressionStream === \"function\") {\n    try {\n      const stream = new Blob([compressed as unknown as BlobPart]).stream().pipeThrough(new runtime.DecompressionStream(\"deflate-raw\"));\n      const buffer = await new Response(stream).arrayBuffer();\n      return new Uint8Array(buffer);\n    } catch (_error) {\n      // Fall through to the Node zlib path when a runtime exposes\n      // DecompressionStream but does not support \"deflate-raw\".\n    }\n  }\n\n  return new Uint8Array(inflateRawSync(compressed));\n}\n", "const crcTable = new Uint32Array(256);\n\nfor (let i = 0; i < 256; i += 1) {\n  let c = i;\n  for (let k = 0; k < 8; k += 1) {\n    c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;\n  }\n  crcTable[i] = c >>> 0;\n}\n\nexport function crc32(data: Uint8Array): number {\n  let crc = 0xffffffff;\n  for (const value of data) {\n    crc = crcTable[(crc ^ value) & 0xff] ^ (crc >>> 8);\n  }\n  return (crc ^ 0xffffffff) >>> 0;\n}\n", "import { parseOpcContentTypesXml, type OpcContentTypes } from \"./opc-content-types.js\";\nimport { createDiagnostic, type OfficeDiagnostic } from \"./diagnostics.js\";\nimport { buildOpcRelationshipsPath, normalizeOpcPartPath } from \"./opc-part-path.js\";\nimport { parseOpcRelationshipsXml, resolveOpcRelationships, type OpcRelationship } from \"./opc-relationships.js\";\nimport { getZipTextEntry, readZipPackage, readZipPackageAsync, type ZipEntry, type ZipReadOptions } from \"./zip-package.js\";\n\nexport interface OfficePackage {\n  entries: ZipEntry[];\n  contentTypes?: OpcContentTypes;\n  diagnostics: OfficeDiagnostic[];\n}\n\nexport interface ReadOfficePartRelationshipsOptions {\n  resolveTargets?: boolean;\n}\n\nexport function readOfficePackage(data: Uint8Array): OfficePackage {\n  const zip = readZipPackage(data);\n  return buildOfficePackageFromZipReadResult(zip.entries, zip.diagnostics);\n}\n\nexport async function readOfficePackageAsync(\n  data: Uint8Array,\n  options: ZipReadOptions = {}\n): Promise<OfficePackage> {\n  const zip = await readZipPackageAsync(data, options);\n  return buildOfficePackageFromZipReadResult(zip.entries, zip.diagnostics);\n}\n\nfunction buildOfficePackageFromZipReadResult(entries: ZipEntry[], zipDiagnostics: OfficeDiagnostic[]): OfficePackage {\n  const diagnostics = [...zipDiagnostics];\n  const contentTypesXml = getZipTextEntry(entries, \"[Content_Types].xml\");\n  let contentTypes: OpcContentTypes | undefined;\n\n  if (contentTypesXml === undefined) {\n    diagnostics.push(\n      createDiagnostic(\n        \"warning\",\n        \"opc.content_types.missing\",\n        \"The package does not contain [Content_Types].xml.\",\n        \"[Content_Types].xml\"\n      )\n    );\n  } else {\n    contentTypes = parseOpcContentTypesXml(contentTypesXml);\n  }\n\n  return contentTypes === undefined\n    ? { entries, diagnostics }\n    : { entries, contentTypes, diagnostics };\n}\n\nexport function listOfficeMediaParts(entries: ZipEntry[]): ZipEntry[] {\n  return entries.filter((entry) => normalizeOpcPartPath(entry.path).includes(\"/media/\"));\n}\n\nexport function readOfficePartRelationships(\n  entries: ZipEntry[],\n  sourcePartPath: string,\n  options: ReadOfficePartRelationshipsOptions = {}\n): OpcRelationship[] {\n  const relsXml = getZipTextEntry(entries, buildOpcRelationshipsPath(sourcePartPath));\n  if (relsXml === undefined) {\n    return [];\n  }\n\n  const relationships = parseOpcRelationshipsXml(relsXml);\n  return options.resolveTargets === false\n    ? relationships\n    : resolveOpcRelationships(relationships, sourcePartPath);\n}\n"],
++  "mappings": "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",
++  "names": []
++}
 diff --git a/tests/md2docx-core.test.js b/tests/md2docx-core.test.js
 index 340a8df..f660efb 100644
 --- a/tests/md2docx-core.test.js

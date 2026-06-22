@@ -221,7 +221,28 @@ support an injected raw-deflate inflater and a default path that tries
 does not yet make `miku-ms-office-core` a complete browser/IIFE runtime package;
 the read-side product integration shape remains an explicit follow-up decision.
 
+## 2026-06-22: Avoid Top-Level Node Builtins in the Release ESM
+
+Reason:
+The standard consumer artifact is now the versioned single-file `.mjs` release
+asset, and the same artifact should be the first candidate for Node CLI products,
+read-side browser-capable products, and `mikuproject`. A static top-level
+`node:zlib` import makes that artifact harder to load in browser-oriented and
+IIFE-style product builds even when those products only need stored ZIP entries
+or async read paths backed by `DecompressionStream`.
+
+Impact:
+The release ESM should not statically import Node builtins. ZIP sync
+compression/decompression may still require Node zlib at call time, but that
+dependency is resolved lazily. Browser-oriented consumers should prefer stored
+write paths, `readZipPackageAsync` / `readOfficePackageAsync`, or an injected
+async inflater. This does not create a separate IIFE artifact; it keeps the
+versioned `.mjs` release asset as the standard first integration target.
+
 ## 2026-06-22: Prefer ESM Consumption for Initial Sibling Integration
+
+Superseded by:
+`2026-06-22: Consumer Products Vendor the Versioned Release ESM`.
 
 Reason:
 The initial core package is a TypeScript / Node.js ESM library with exported
@@ -255,6 +276,9 @@ policy, or MS Project semantics into this repository.
 
 ## 2026-06-22: Keep Package Private and Use Local File Dependencies First
 
+Superseded by:
+`2026-06-22: Consumer Products Vendor the Versioned Release ESM`.
+
 Reason:
 The current sibling proofs are still deliberate working tree experiments. A
 local `file:../miku-ms-office-core` dependency proves the ESM package boundary
@@ -266,6 +290,9 @@ consume the package through public ESM imports and a local file dependency. The
 package artifact is limited to `dist`, `README.md`, and `LICENSE`; `npm pack
 --dry-run` is used to verify the artifact. The build now cleans `dist` before
 compilation so renamed stale modules are not packed.
+
+Later proof patches replaced this landing shape with versioned release `.mjs`
+vendoring while keeping the package private.
 
 ## 2026-06-22: Guard the Public API Surface
 
@@ -330,3 +357,41 @@ audits dependencies, builds the package, creates
 `miku-ms-office-core-<version>.mjs` plus its source map to the matching GitHub
 Release. This workflow does not run `npm publish` and does not create a CLI
 bundle asset.
+
+## 2026-06-22: Consumer Products Vendor the Versioned Release ESM
+
+Reason:
+The intended miku-soft integration shape is that each product can include the
+same reviewed `miku-ms-office-core` library file. Using a local
+`file:../miku-ms-office-core` dependency was useful for proof-of-use work, but
+it would make write-side products, read-side products, and project tooling use
+different distribution mechanisms.
+
+Impact:
+Consuming products should use the GitHub Release asset
+`miku-ms-office-core-<version>.mjs`, starting with
+`miku-ms-office-core-0.5.0.mjs`, as the standard vendored library artifact.
+Product repositories own where that file is placed and how their build imports
+it. When source maps are kept, products should also copy the release `.mjs.map`
+asset under the filename expected by the vendored `.mjs` source map reference,
+or explicitly rewrite that reference in a product build step. Products should
+not import from this repository's `dist/*` paths or keep a local `file:`
+dependency as the final landing shape. Existing sibling proof patches that used
+`file:../miku-ms-office-core` should be refreshed to the versioned release asset
+model before landing.
+
+## 2026-06-22: Prepare Release Assets Through a Local Script
+
+Reason:
+The GitHub Release workflow versions both the `.mjs` file and its `.mjs.map`
+file. If staging is kept as inline workflow shell, local verification is weaker
+and the `.mjs` file can accidentally keep an unversioned `sourceMappingURL`
+while only the versioned map asset is uploaded.
+
+Impact:
+Release asset staging is owned by `scripts/prepare-release-assets.mjs` and
+exposed through `npm run prepare:release-assets`. The workflow calls that same
+script. The script validates the `v*` tag against `package.json`, allows patch
+suffix tags such as `v0.5.0.1`, stages files under `release-assets/`, and
+rewrites the `.mjs` `sourceMappingURL` to the staged versioned `.mjs.map`
+filename. `release-assets/` is ignored because it is generated output.

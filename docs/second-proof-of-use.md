@@ -21,7 +21,7 @@ drawing, image preview, Markdown parsing, or rich text semantics into
 
 ## Proposed Proof Steps
 
-1. Add `miku-ms-office-core` as a local development dependency in
+1. Vendor `miku-ms-office-core-0.5.0.mjs` from the GitHub Release asset into
    `miku-md2xlsx`.
 2. In `src/ts/xlsx-writer.ts`, replace `createZip(entries)` with
    `writeZipPackage(entries)`.
@@ -47,7 +47,20 @@ import {
 } from "miku-ms-office-core";
 ```
 
-Avoid imports from private `dist/*` paths.
+In the landing proof, import from the vendored release asset path instead of a
+package dependency:
+
+```ts
+import {
+  buildOpcContentTypesXml,
+  buildOpcRelationshipsXml,
+  writeZipPackage,
+  type ZipEntryInput
+} from "../vendor/miku-ms-office-core-0.5.0.mjs";
+```
+
+Avoid imports from private `dist/*` paths and avoid keeping
+`file:../miku-ms-office-core` as the final dependency shape.
 
 ## Expected Non-Goals
 
@@ -97,8 +110,9 @@ Do not commit files under `workplace/` except `workplace/.gitkeep`.
 
 ## Current Proof Result
 
-The proof was applied to the sibling `miku-md2xlsx` working tree on
-2026-06-22. The sibling change uses `miku-ms-office-core` for:
+The proof was refreshed in the sibling `miku-md2xlsx` working tree on
+2026-06-22 to use the versioned release `.mjs` asset. The sibling change uses
+the vendored `miku-ms-office-core-0.5.0.mjs` for:
 
 - reproducible ZIP package writing through `writeZipPackage`
 - root package relationship XML through `buildOpcRelationshipsXml`
@@ -123,14 +137,11 @@ npm run smoke:bundle
 ```
 
 All of the above passed after the audit cleanup. The sibling working tree now
-has deliberate proof changes in `package.json`, `package-lock.json`, and
-`src/ts/xlsx-writer.ts`.
-
-`npm ls esbuild vite vitest miku-ms-office-core` can still report a
-linked-development-tree caveat because the local `file:../miku-ms-office-core`
-dependency exposes its own dev dependency tree; this did not block audit,
-tests, semantic roundtrip, bundle build, or bundled CLI smoke verification.
-`miku-ms-office-core` itself reports a clean `npm ls esbuild vite vitest`.
+has deliberate proof changes in `package.json`, `package-lock.json`,
+`src/ts/xlsx-writer.ts`, and `src/vendor/`. The earlier local
+`file:../miku-ms-office-core` dependency was removed from the refreshed proof;
+the product imports from `src/vendor/miku-ms-office-core-0.5.0.mjs`, and the
+CLI release bundle includes the vendored helper code.
 
 ## Verification Commands
 
@@ -145,7 +156,6 @@ Sibling-side after applying the proof patch:
 
 ```sh
 git apply ../miku-ms-office-core/docs/patches/miku-md2xlsx-ms-office-core-proof.patch
-npm install
 npm audit
 npm test
 npm run test:semantic-roundtrip
