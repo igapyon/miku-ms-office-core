@@ -129,16 +129,16 @@ Update this section while working. Do not rewrite unrelated TODO items.
 - [x] Verify that `miku-docx2md`, `miku-xlsx2md`, and `mikuproject` vendored
   `miku-ms-office-core-0.5.0.1.mjs` / `.mjs.map` match the local staged
   release assets.
-- [x] Replace the `miku-docx2md` proof vendor asset with the staged
-  versioned `miku-ms-office-core-0.5.0.1.mjs` candidate.
-- [x] Replace the `miku-xlsx2md` proof vendor asset with the staged
-  versioned `miku-ms-office-core-0.5.0.1.mjs` candidate.
-- [x] Replace the `mikuproject` proof vendor asset with the staged
-  versioned `miku-ms-office-core-0.5.0.1.mjs` candidate.
-- [ ] Publish or consume the next versioned `.mjs` release asset after the
+- [x] Replace the `miku-docx2md` proof vendor asset with the versioned
+  `miku-ms-office-core-0.5.0.1.mjs` release asset.
+- [x] Replace the `miku-xlsx2md` proof vendor asset with the versioned
+  `miku-ms-office-core-0.5.0.1.mjs` release asset.
+- [x] Replace the `mikuproject` proof vendor asset with the versioned
+  `miku-ms-office-core-0.5.0.1.mjs` release asset.
+- [x] Publish or consume the next versioned `.mjs` release asset after the
   top-level Node builtin import removal.
-- [ ] Confirm the staged `miku-ms-office-core-0.5.0.1.mjs` candidate matches
-  the uploaded GitHub Release asset after publication with
+- [x] Confirm the staged `miku-ms-office-core-0.5.0.1.mjs` asset matches the
+  GitHub Actions-published Release asset with
   `TAG_NAME=v0.5.0.1 npm run verify:release-assets`.
 - [ ] Decide whether core ZIP writing needs an explicit UTF-8 flag policy before
   replacing `miku-xlsx2md` `createStoredZip` or `mikuproject` `packZip`.
