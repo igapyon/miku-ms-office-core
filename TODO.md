@@ -88,8 +88,10 @@ Update this section while working. Do not rewrite unrelated TODO items.
 - [x] Record the current goal completion audit in
   `docs/completion-audit.md`.
 - [x] Add a GitHub Actions CI baseline for branch pushes, `v*` tag pushes,
-  pull requests, manual dispatch, install, test, audit, build, and package
-  dry-run checks.
+  pull requests, manual dispatch, install, test, audit, package build, library
+  bundle build, bundle smoke, and package dry-run checks.
+- [x] Add a GitHub Actions release workflow for uploading the single-file ESM
+  library bundle to GitHub Releases from matching `v*` tags.
 - [ ] Add a focused PPTX package fixture when PPTX read/write candidates become
   active.
 

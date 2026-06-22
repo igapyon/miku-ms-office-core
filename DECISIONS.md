@@ -308,6 +308,25 @@ Impact:
 `.github/workflows/ci.yml` runs on branch pushes, `v*` tag pushes, pull
 requests, and manual dispatch. It uses Node.js 20, installs dependencies with
 `npm ci`, then runs `npm test`, `npm audit`, `npm run build`, and
-`npm pack --dry-run` in order. A `v*` tag push verifies the package build only;
-GitHub Release asset upload and npm publish workflows remain out of scope until
-explicitly requested.
+`npm run build:bundle`, `npm run smoke:bundle`, and `npm pack --dry-run` in
+order. A `v*` tag push verifies the package and library bundle builds only;
+GitHub Release asset upload and npm publish workflows remain out of scope for
+the CI baseline.
+
+## 2026-06-22: Use Single-File ESM as the Library Release Asset
+
+Reason:
+`miku-ms-office-core` is an internal TypeScript / Node.js library package, not a
+CLI runtime bundle. The repository has no `bundle/*.mjs` artifact or
+CLI entrypoint. Other miku-soft products may still need to include a generated
+library file directly, so the release asset should be a single-file ESM library
+bundle rather than an npm package tarball.
+
+Impact:
+`.github/workflows/release-library-bundle.yml` runs on `v*` tag pushes and
+manual dispatch for existing `v*` tags. It installs dependencies, runs tests,
+audits dependencies, builds the package, creates
+`bundle/miku-ms-office-core.mjs`, smoke-tests its public exports, and uploads
+`miku-ms-office-core-<version>.mjs` plus its source map to the matching GitHub
+Release. This workflow does not run `npm publish` and does not create a CLI
+bundle asset.
