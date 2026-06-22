@@ -2,21 +2,57 @@
 
 Checked on 2026-06-22.
 
-## Initial Policy
+## Consumer Policy
 
-`miku-ms-office-core` is currently an internal ESM package.
+`miku-ms-office-core` is currently an internal ESM library. The standard
+consumer-facing artifact is the versioned single-file release asset:
 
-Initial sibling integration should use public package imports:
-
-```ts
-import { readOfficePackage, writeZipPackage } from "miku-ms-office-core";
+```text
+miku-ms-office-core-<version>.mjs
 ```
 
-Do not import from `dist/*` paths.
+For version `0.5.0`, the source asset is:
 
-## Local Development Dependency
+```text
+https://github.com/igapyon/miku-ms-office-core/releases/download/v0.5.0/miku-ms-office-core-0.5.0.mjs
+```
 
-Sibling proof branches currently use a local file dependency:
+Each consuming miku-soft product should vendor or otherwise include that
+versioned `.mjs` file in its own source/build layout, then wire the product's
+build or runtime to import from the vendored copy. Do not make `miku-md2docx`,
+`miku-md2xlsx`, read-side products, and project tools use different
+distribution mechanisms unless a product-specific runtime constraint is
+documented.
+
+Products whose current runtime is not ESM, such as IIFE/module-registry builds,
+should still start from the versioned `.mjs` asset. Their build can transform the
+vendored `.mjs` into a product-local wrapper module or global adapter before the
+rest of the product modules are bundled. The wrapper is product-owned; the
+reviewed source artifact remains the versioned release `.mjs`.
+
+This is the proof pattern used by `miku-docx2md`, `miku-xlsx2md`, and
+`mikuproject`: vendor the release `.mjs`, generate a product-local adapter, and
+let the final product bundle absorb that generated adapter.
+
+When the product keeps source maps for local diagnostics, also copy the release
+`.mjs.map` asset next to the vendored `.mjs`. The generated `.mjs` currently
+contains `//# sourceMappingURL=miku-ms-office-core.mjs.map`, so either keep that
+local map filename or rewrite the source map reference in a documented product
+build step.
+
+Consumer code should still import the public API surface, not private generated
+internals. The local import path is product-owned, but the imported names should
+match the public release asset exports:
+
+```ts
+import { readOfficePackage, writeZipPackage } from "./path/to/miku-ms-office-core-0.5.0.mjs";
+```
+
+Do not import from this repository's `dist/*` paths in consuming products.
+
+## Proof Dependency Status
+
+Earlier sibling proof branches used a local file dependency:
 
 ```json
 {
@@ -26,12 +62,14 @@ Sibling proof branches currently use a local file dependency:
 }
 ```
 
-Run `npm install` in the sibling repository after changing this dependency so
-the sibling lockfile records the local package.
+That was useful to prove the API boundary, but it is no longer the intended
+consumer distribution mechanism. Refresh sibling proof patches to consume the
+versioned release `.mjs` asset instead of keeping `file:../miku-ms-office-core`
+as the landing shape.
 
 ## Artifact Shape
 
-The package artifact should contain only:
+The npm package artifact should contain only:
 
 - `dist`
 - `README.md`
@@ -53,17 +91,88 @@ temporary files under the repository-local ignored `workplace/` area.
 Run pack verification after build, not in parallel with build or test, because
 `prebuild` intentionally cleans `dist`.
 
+The release bundle artifact is generated separately:
+
+```sh
+npm run build:bundle
+npm run smoke:bundle
+```
+
+The local generated filenames are stable:
+
+```text
+bundle/miku-ms-office-core.mjs
+bundle/miku-ms-office-core.mjs.map
+```
+
+The GitHub Release asset filenames are versioned:
+
+```text
+miku-ms-office-core-0.5.0.mjs
+miku-ms-office-core-0.5.0.mjs.map
+```
+
+Release assets are prepared by the repository script:
+
+```sh
+TAG_NAME=v0.5.0.1 npm run prepare:release-assets
+```
+
+The script stages files under `release-assets/`, validates that the tag version
+matches `package.json` or uses an accepted dot suffix, and rewrites the `.mjs`
+`sourceMappingURL` to the staged versioned `.mjs.map` filename. The GitHub
+Release workflow uses the same script before uploading assets.
+
+After the GitHub Release asset is published, verify that the uploaded asset
+matches the locally staged asset:
+
+```sh
+TAG_NAME=v0.5.0.1 npm run verify:release-assets
+```
+
+For local sibling proof work, verify that each product's vendored asset matches
+the staged release asset:
+
+```sh
+TAG_NAME=v0.5.0.1 npm run verify:consumer-assets
+```
+
+The current `v0.5.0` digests are:
+
+```text
+369a9e0232129dbb59c982999b71671614a4d4ead180331b4d90437966cf1af4  miku-ms-office-core-0.5.0.mjs
+de1a3b0da882bd7828e29227171191a95f6c072ffaef96ee0bd456748b3c520c  miku-ms-office-core-0.5.0.mjs.map
+```
+
 ## Publication Status
 
-The package remains `"private": true` for now.
+The package remains `"private": true` for now. GitHub Release assets are the
+current distribution channel for product-side vendoring.
 
-Do not publish this package until sibling proof changes have been reviewed and
-the internal distribution path is chosen. For now, local `file:` dependencies
-are the authoritative proof mechanism.
+Do not publish this package to npm until that is explicitly chosen as a separate
+distribution path.
 
 ## Runtime Note
 
-The current published surface is ESM and Node-oriented. Synchronous ZIP
-compression/decompression uses `node:zlib`. Async read APIs can use
-`DecompressionStream` or an injected inflater, but this is not yet a separate
-browser/IIFE runtime artifact.
+The current published `v0.5.0` asset is ESM and Node-oriented. Its ZIP sync
+compression/decompression path uses `node:zlib`, and the published asset still
+contains a static Node builtin import.
+
+The next release asset should keep the same versioned `.mjs` consumption model
+while avoiding top-level Node builtin imports. ZIP sync compression and sync
+deflated-read paths may still require Node zlib at call time, but browser-
+oriented products should be able to load the artifact when they use stored
+entries, `readZipPackageAsync` / `readOfficePackageAsync`,
+`DecompressionStream`, or an injected async inflater.
+
+This is not yet a separate browser/IIFE runtime artifact. Read-side products and
+`mikuproject` should first test whether the versioned release `.mjs` can fit
+their existing build/runtime shape before introducing another artifact kind.
+The local proofs show that this shape works for read-side ZIP paths; write-side
+replacement still needs explicit core policy for product ZIP flag and timestamp
+behavior.
+
+As of 2026-06-22, GitHub's latest release remains `v0.5.0`. The post-`v0.5.0`
+runtime-shape change has been staged locally as the candidate patch-suffix asset
+name `miku-ms-office-core-0.5.0.1.mjs`, but that asset is not yet published on
+GitHub Release.

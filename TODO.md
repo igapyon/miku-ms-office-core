@@ -79,8 +79,8 @@ Update this section while working. Do not rewrite unrelated TODO items.
   integration shape.
 - [x] Record the initial package consumption and artifact policy in
   `docs/package-consumption.md`.
-- [ ] Revisit a bundle-friendly runtime artifact only after repeated need is
-  proven by read-side products.
+- [x] Revisit the bundle-friendly runtime artifact policy and choose the
+  versioned single-file ESM release asset as the standard consumer artifact.
 - [x] Add focused real DOCX / XLSX package fixtures for package-level read
   coverage after the first migration targets are chosen.
 - [x] Add a public API surface guard test and summarize the current API in
@@ -92,6 +92,52 @@ Update this section while working. Do not rewrite unrelated TODO items.
   bundle build, bundle smoke, and package dry-run checks.
 - [x] Add a GitHub Actions release workflow for uploading the single-file ESM
   library bundle to GitHub Releases from matching `v*` tags.
+- [x] Refresh sibling proof patches to consume the versioned release `.mjs`
+  asset instead of `file:../miku-ms-office-core`.
+- [x] Remove top-level Node builtin imports from the next release `.mjs` build
+  so the standard artifact is a better first candidate for browser-oriented
+  products.
+- [x] Add a core-side runtime-shape test proving the release ESM source can be
+  wrapped into a browser-style IIFE global for stored ZIP package operations.
+- [x] Apply and verify a local `miku-docx2md` wrapper proof using the
+  post-`v0.5.0` core bundle candidate.
+- [x] Record the `miku-docx2md` wrapper proof as
+  `docs/patches/miku-docx2md-ms-office-core-wrapper-proof.patch`.
+- [x] Run `npm audit fix` in `miku-docx2md` proof work and record the resulting
+  package/lockfile updates in the wrapper proof patch.
+- [x] Apply and verify a local `miku-xlsx2md` wrapper proof for `unzipEntries`
+  using the post-`v0.5.0` core bundle candidate.
+- [x] Record the `miku-xlsx2md` wrapper proof as
+  `docs/patches/miku-xlsx2md-ms-office-core-wrapper-proof.patch`.
+- [x] Run `npm audit fix` in `miku-xlsx2md` proof work and record the resulting
+  package/lockfile updates in the wrapper proof patch.
+- [x] Apply and verify a local `mikuproject` wrapper proof for async XLSX ZIP
+  reads using the post-`v0.5.0` core bundle candidate.
+- [x] Record the `mikuproject` wrapper proof as
+  `docs/patches/mikuproject-ms-office-core-wrapper-proof.patch`.
+- [x] Run `npm audit fix` in `mikuproject` proof work and record the resulting
+  package/lockfile updates in the wrapper proof patch.
+- [x] Add a local release asset staging script for versioned `.mjs` and
+  `.mjs.map` files, and use it from the GitHub Release workflow.
+- [x] Verify local staging for the next patch-suffix asset name
+  `miku-ms-office-core-0.5.0.1.mjs`.
+- [x] Add a release asset verification script that compares uploaded GitHub
+  Release digests with the local staged versioned assets.
+- [x] Add a consumer asset verification script that compares each sibling
+  product's vendored asset with the local staged versioned assets.
+- [x] Replace the `miku-docx2md` proof vendor asset with the staged
+  versioned `miku-ms-office-core-0.5.0.1.mjs` candidate.
+- [x] Replace the `miku-xlsx2md` proof vendor asset with the staged
+  versioned `miku-ms-office-core-0.5.0.1.mjs` candidate.
+- [x] Replace the `mikuproject` proof vendor asset with the staged
+  versioned `miku-ms-office-core-0.5.0.1.mjs` candidate.
+- [ ] Publish or consume the next versioned `.mjs` release asset after the
+  top-level Node builtin import removal.
+- [ ] Confirm the staged `miku-ms-office-core-0.5.0.1.mjs` candidate matches
+  the uploaded GitHub Release asset after publication with
+  `TAG_NAME=v0.5.0.1 npm run verify:release-assets`.
+- [ ] Decide whether core ZIP writing needs an explicit UTF-8 flag policy before
+  replacing `miku-xlsx2md` `createStoredZip` or `mikuproject` `packZip`.
 - [ ] Add a focused PPTX package fixture when PPTX read/write candidates become
   active.
 
@@ -103,6 +149,15 @@ Update this section while working. Do not rewrite unrelated TODO items.
 - Sibling `miku-md2xlsx` now has deliberate proof-of-use working tree changes
   and a package-lock update from `npm install` / `npm audit fix`; do not revert
   them unless explicitly requested.
+- Sibling `miku-docx2md` now has deliberate proof-of-use working tree changes
+  for the `miku-ms-office-core` wrapper adapter plus package/lockfile audit
+  updates; do not revert them unless explicitly requested.
+- Sibling `miku-xlsx2md` now has deliberate proof-of-use working tree changes
+  for the `miku-ms-office-core` wrapper adapter plus package/lockfile audit
+  updates; do not revert them unless explicitly requested.
+- Sibling `mikuproject` now has deliberate proof-of-use working tree changes
+  for the `miku-ms-office-core` wrapper adapter plus package/lockfile audit
+  updates; do not revert them unless explicitly requested.
 
 ### Retry Log
 
