@@ -43,5 +43,11 @@ jobs:
       - name: Build package
         run: npm run build
 
+      - name: Build library bundle
+        run: npm run build:bundle
+
+      - name: Smoke test library bundle
+        run: npm run smoke:bundle
+
       - name: Check package artifact
         run: npm pack --dry-run

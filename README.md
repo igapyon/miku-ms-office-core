@@ -65,7 +65,16 @@ local-first.
 
 GitHub Actions CI is defined in `.github/workflows/ci.yml`. It runs on branch
 pushes, `v*` tag pushes, pull requests, and manual dispatch. The job runs
-install, test, audit, build, and package artifact dry-run checks.
+install, test, audit, package build, library bundle build, bundle smoke, and
+package artifact dry-run checks.
+
+GitHub Release package upload is defined in
+`.github/workflows/release-library-bundle.yml`. It runs on `v*` tag pushes, or
+manual dispatch with an existing `v*` tag, verifies the package, creates the
+single-file ESM library bundle `bundle/miku-ms-office-core.mjs`, smoke-tests its
+exports, and uploads it as a GitHub Release asset. This asset is for miku-soft
+products that need to include a generated library file; it is not a CLI runtime
+bundle and does not publish to npm.
 
 ## Current API Shape
 
@@ -85,10 +94,10 @@ compression/decompression. Async read APIs try `DecompressionStream` for
 `deflate-raw` first and fall back to Node zlib; callers can also inject their
 own raw-deflate inflater.
 
-Browser or IIFE runtime integration is not finalized yet. Product repositories
-that already use ESM imports can consume the package more directly. Products
-that embed IIFE runtime bundles, such as the current `miku-docx2md`, need an
-explicit integration decision before sibling-side migration.
+Product repositories that already use ESM package imports can consume the
+package directly. Products that need to include a generated library file can use
+the release asset `miku-ms-office-core-<version>.mjs`. Browser or IIFE runtime
+integration still needs an explicit product-side decision before migration.
 
 Package consumption details are recorded in `docs/package-consumption.md`.
 The current public API surface is summarized in `docs/api-reference.md`.
