@@ -63,6 +63,10 @@ npm test
 The initial package layer is TypeScript / Node.js and keeps runtime behavior
 local-first.
 
+GitHub Actions CI is defined in `.github/workflows/ci.yml`. It runs on branch
+pushes, `v*` tag pushes, pull requests, and manual dispatch. The job runs
+install, test, audit, build, and package artifact dry-run checks.
+
 ## Current API Shape
 
 The current foundation exposes low-level helpers for:

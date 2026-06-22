@@ -87,6 +87,9 @@ Update this section while working. Do not rewrite unrelated TODO items.
   `docs/api-reference.md`.
 - [x] Record the current goal completion audit in
   `docs/completion-audit.md`.
+- [x] Add a GitHub Actions CI baseline for branch pushes, `v*` tag pushes,
+  pull requests, manual dispatch, install, test, audit, build, and package
+  dry-run checks.
 - [ ] Add a focused PPTX package fixture when PPTX read/write candidates become
   active.
 
