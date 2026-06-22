@@ -1,6 +1,6 @@
 # Package Consumption
 
-Checked on 2026-06-22.
+Checked on 2026-06-23.
 
 ## Consumer Policy
 
@@ -144,6 +144,13 @@ The current `v0.5.0` digests are:
 de1a3b0da882bd7828e29227171191a95f6c072ffaef96ee0bd456748b3c520c  miku-ms-office-core-0.5.0.mjs.map
 ```
 
+The current `v0.5.0.1` digests are:
+
+```text
+458540423efd321bc6aeafe9dad978e453302b1e6e01822652a978f8334832e4  miku-ms-office-core-0.5.0.1.mjs
+fac0f44a6c419bfb82dee5bebfc5b9362183281bd7e09438addec5c3f57b554b  miku-ms-office-core-0.5.0.1.mjs.map
+```
+
 ## Publication Status
 
 The package remains `"private": true` for now. GitHub Release assets are the
@@ -172,7 +179,8 @@ The local proofs show that this shape works for read-side ZIP paths; write-side
 replacement still needs explicit core policy for product ZIP flag and timestamp
 behavior.
 
-As of 2026-06-22, GitHub's latest release remains `v0.5.0`. The post-`v0.5.0`
-runtime-shape change has been staged locally as the candidate patch-suffix asset
-name `miku-ms-office-core-0.5.0.1.mjs`, but that asset is not yet published on
-GitHub Release.
+As of 2026-06-23, GitHub Release `v0.5.0.1` publishes the post-`v0.5.0`
+runtime-shape asset names `miku-ms-office-core-0.5.0.1.mjs` and
+`miku-ms-office-core-0.5.0.1.mjs.map`. The release asset digests match the
+locally staged assets, and the sibling proof vendor copies were verified with
+`TAG_NAME=v0.5.0.1 npm run verify:consumer-assets`.

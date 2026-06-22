@@ -1,6 +1,6 @@
 # Completion Audit
 
-Checked on 2026-06-22.
+Checked on 2026-06-23.
 
 This audit checks the active goal against the current repository state.
 
@@ -93,24 +93,24 @@ At least one sibling repository has a proof-of-use showing how it consumes
 - `miku-md2docx`
 - `miku-md2xlsx`
 
-There is also a read-side `miku-docx2md` wrapper proof using the locally staged
-`miku-ms-office-core-0.5.0.1.mjs` release asset candidate. It proves that the
+There is also a read-side `miku-docx2md` wrapper proof using the versioned
+GitHub Release asset `miku-ms-office-core-0.5.0.1.mjs`. It proves that the
 product can generate a module-registry adapter from a vendored `.mjs` and
 replace its local ZIP reader with `readZipPackageAsync`. The proof patch also
 includes `miku-docx2md` dependency hygiene updates so `npm audit` reports zero
 vulnerabilities.
 
 `miku-xlsx2md` has the same wrapper proof pattern for its read-side
-`unzipEntries` path and the same locally staged
-`miku-ms-office-core-0.5.0.1.mjs` release asset candidate. Its product-owned
+`unzipEntries` path and the same versioned GitHub Release asset
+`miku-ms-office-core-0.5.0.1.mjs`. Its product-owned
 `createStoredZip` remains in place because the current product tests protect
 ASCII versus non-ASCII UTF-8 flag behavior that the core writer does not yet
 expose as policy.
 
 `mikuproject` has the same versioned `.mjs` vendor pattern with a generated
-global adapter and the same locally staged
-`miku-ms-office-core-0.5.0.1.mjs` release asset candidate. Its async XLSX ZIP
-read path consumes `readZipPackageAsync`. Its sync `packZip` / `unpackZip`
+global adapter and the same versioned GitHub Release asset
+`miku-ms-office-core-0.5.0.1.mjs`. Its async XLSX ZIP read path consumes
+`readZipPackageAsync`. Its sync `packZip` / `unpackZip`
 paths remain product-owned because they are part of the current workbook
 output/runtime contract.
 
@@ -163,7 +163,8 @@ Evidence:
 - `docs/package-consumption.md`
 - `DECISIONS.md`
 - `npm_config_cache=workplace/.npm-cache npm pack --dry-run`
-- GitHub Release asset `miku-ms-office-core-0.5.0.mjs`
+- GitHub Release assets `miku-ms-office-core-0.5.0.mjs` and
+  `miku-ms-office-core-0.5.0.1.mjs`
 
 ## Release ESM Runtime Shape
 
@@ -186,8 +187,7 @@ Evidence:
 - `npm run build:all`
 - `npm run smoke:bundle`, including the browser-style IIFE wrapping check
 - `TAG_NAME=v0.5.0.1 npm run prepare:release-assets`
-- `TAG_NAME=v0.5.0.1 npm run verify:release-assets` after `v0.5.0.1` is
-  published
+- `TAG_NAME=v0.5.0.1 npm run verify:release-assets`
 - `TAG_NAME=v0.5.0.1 npm run verify:consumer-assets`
 - `node --input-type=module -e "const core = await import('./release-assets/miku-ms-office-core-0.5.0.1.mjs'); console.log(Object.keys(core).length);"`
 - `node --input-type=module -e "await import('./bundle/miku-ms-office-core.mjs')"`
@@ -195,17 +195,9 @@ Evidence:
 
 ## Remaining Follow-Ups
 
-These are still required before the broader product-application goal can be
-called complete:
+These are outside the completed release-asset consumption goal and remain as
+later follow-ups:
 
-- Publish or consume the next versioned `.mjs` release asset after the top-level
-  Node builtin import removal. The latest GitHub Release checked on
-  2026-06-22 is still `v0.5.0`; the locally staged next candidate is
-  `miku-ms-office-core-0.5.0.1.mjs`.
-- Confirm the staged `miku-ms-office-core-0.5.0.1.mjs` candidate used by
-  `miku-docx2md`, `miku-xlsx2md`, and `mikuproject` proof patches matches the
-  uploaded GitHub Release asset after publication. This is now script-backed by
-  `TAG_NAME=v0.5.0.1 npm run verify:release-assets`.
 - Decide whether core ZIP writing needs an explicit UTF-8 flag policy before
   replacing `miku-xlsx2md` `createStoredZip` or `mikuproject` `packZip`.
 - Add a focused PPTX package fixture when PPTX read/write candidates become
