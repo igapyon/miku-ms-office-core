@@ -112,7 +112,8 @@ Update this section while working. Do not rewrite unrelated TODO items.
 - [x] Run `npm audit fix` in `miku-xlsx2md` proof work and record the resulting
   package/lockfile updates in the wrapper proof patch.
 - [x] Apply and verify a local `mikuproject` wrapper proof for async XLSX ZIP
-  reads using the post-`v0.5.0` core bundle candidate.
+  reads using the staged versioned `miku-ms-office-core-0.5.0.1.mjs`
+  candidate.
 - [x] Record the `mikuproject` wrapper proof as
   `docs/patches/mikuproject-ms-office-core-wrapper-proof.patch`.
 - [x] Run `npm audit fix` in `mikuproject` proof work and record the resulting
@@ -125,6 +126,9 @@ Update this section while working. Do not rewrite unrelated TODO items.
   Release digests with the local staged versioned assets.
 - [x] Add a consumer asset verification script that compares each sibling
   product's vendored asset with the local staged versioned assets.
+- [x] Verify that `miku-docx2md`, `miku-xlsx2md`, and `mikuproject` vendored
+  `miku-ms-office-core-0.5.0.1.mjs` / `.mjs.map` match the local staged
+  release assets.
 - [x] Replace the `miku-docx2md` proof vendor asset with the staged
   versioned `miku-ms-office-core-0.5.0.1.mjs` candidate.
 - [x] Replace the `miku-xlsx2md` proof vendor asset with the staged
