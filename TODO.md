@@ -140,7 +140,10 @@ Update this section while working. Do not rewrite unrelated TODO items.
 - [x] Confirm the staged `miku-ms-office-core-0.5.0.1.mjs` asset matches the
   GitHub Actions-published Release asset with
   `TAG_NAME=v0.5.0.1 npm run verify:release-assets`.
-- [ ] Decide whether core ZIP writing needs an explicit UTF-8 flag policy before
+- [x] Refactor ZIP read/write internals without changing public API or output
+  behavior.
+- [x] Bump package metadata from `0.5.0` to `0.5.1`.
+- [x] Decide whether core ZIP writing needs an explicit UTF-8 flag policy before
   replacing `miku-xlsx2md` `createStoredZip` or `mikuproject` `packZip`.
 - [ ] Add a focused PPTX package fixture when PPTX read/write candidates become
   active.

@@ -395,3 +395,18 @@ script. The script validates the `v*` tag against `package.json`, allows patch
 suffix tags such as `v0.5.0.1`, stages files under `release-assets/`, and
 rewrites the `.mjs` `sourceMappingURL` to the staged versioned `.mjs.map`
 filename. `release-assets/` is ignored because it is generated output.
+
+## 2026-06-25: Make ZIP Filename UTF-8 Policy Explicit
+
+Reason:
+The shared core writes ZIP entry names using `TextEncoder`, so the package
+filename policy should be explicit before sibling write-side ZIP helpers such
+as `miku-xlsx2md` `createStoredZip` or `mikuproject` `packZip` are replaced.
+Implicit flag literals make the policy easy to miss during migration review.
+
+Impact:
+`writeZipPackage` now uses a named `ZIP_GENERAL_PURPOSE_FLAG_UTF8` constant and
+sets the ZIP general purpose UTF-8 flag in both local file headers and central
+directory headers. `tests/zip-reproducibility.test.js` verifies the flag with a
+non-ASCII path. `docs/api-reference.md` records this as the package-level ZIP
+filename policy.
