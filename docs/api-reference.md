@@ -19,6 +19,11 @@ Synchronous ZIP APIs are Node-oriented and use `node:zlib` for deflate.
 Async ZIP reading can use `DecompressionStream`, Node zlib fallback, or an
 injected `inflateRaw` function.
 
+ZIP writing encodes entry names as UTF-8 and sets the ZIP general purpose
+UTF-8 flag in both local file headers and central directory headers. This is
+the package-level filename policy used before replacing sibling write-side ZIP
+helpers.
+
 ## OPC Paths
 
 - `normalizeOpcPartPath(partPath)`

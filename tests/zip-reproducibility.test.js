@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { inflateRawSync } from "node:zlib";
-import { getZipTextEntry, readZipPackage, readZipPackageAsync, writeZipPackage } from "../dist/index.js";
+import {
+  getZipTextEntry,
+  readUint16,
+  readUint32,
+  readZipPackage,
+  readZipPackageAsync,
+  writeZipPackage
+} from "../dist/index.js";
+
+const CENTRAL_DIRECTORY_SIGNATURE = 0x02014b50;
+const ZIP_GENERAL_PURPOSE_FLAG_UTF8 = 0x0800;
 
 describe("ZIP reproducibility", () => {
   it("writes stable entry order and fixed timestamps by default", () => {
@@ -47,6 +57,20 @@ describe("ZIP reproducibility", () => {
     expect(result.entries.map((entry) => entry.compression)).toEqual(["deflate", "store"]);
   });
 
+  it("marks written entry names as UTF-8 in local and central headers", () => {
+    const zip = writeZipPackage([
+      { path: "xl/worksheets/表.xml", data: "<worksheet/>" }
+    ]);
+    const centralDirectoryOffset = findSignature(zip, CENTRAL_DIRECTORY_SIGNATURE);
+
+    expect(readUint16(zip, 6)).toBe(ZIP_GENERAL_PURPOSE_FLAG_UTF8);
+    expect(readUint16(zip, centralDirectoryOffset + 8)).toBe(ZIP_GENERAL_PURPOSE_FLAG_UTF8);
+
+    const result = readZipPackage(zip);
+    expect(result.diagnostics).toEqual([]);
+    expect(result.entries[0].path).toBe("xl/worksheets/表.xml");
+  });
+
   it("reads deflated entries through the async ZIP reader", async () => {
     const zip = writeZipPackage(
       [
@@ -69,3 +93,12 @@ describe("ZIP reproducibility", () => {
     expect(getZipTextEntry(result.entries, "word/styles.xml")).toBe("<styles/>");
   });
 });
+
+function findSignature(data, signature) {
+  for (let offset = 0; offset <= data.length - 4; offset += 1) {
+    if (readUint32(data, offset) === signature) {
+      return offset;
+    }
+  }
+  throw new Error(`ZIP signature was not found: ${signature.toString(16)}`);
+}

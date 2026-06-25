@@ -49,9 +49,23 @@ interface CentralDirectoryEntry {
   modifiedAt: Date;
 }
 
+interface PreparedZipEntry {
+  path: string;
+  data: Uint8Array;
+  compression: ZipCompressionMethod;
+  modifiedAt: Date;
+}
+
+interface SerializedZipEntry {
+  localHeader: Uint8Array;
+  centralHeader: Uint8Array;
+  compressed: Uint8Array;
+}
+
 const EOCD_SIGNATURE = 0x06054b50;
 const CENTRAL_DIRECTORY_SIGNATURE = 0x02014b50;
 const LOCAL_FILE_SIGNATURE = 0x04034b50;
+const ZIP_GENERAL_PURPOSE_FLAG_UTF8 = 0x0800;
 const FIXED_TIMESTAMP = new Date(Date.UTC(1980, 0, 1, 0, 0, 0));
 
 interface NodeZlibLike {
@@ -70,22 +84,12 @@ export function readZipPackage(data: Uint8Array): ZipReadResult {
 
   for (const central of centralDirectory) {
     try {
-      const localNameLength = readUint16(data, central.localHeaderOffset + 26);
-      const localExtraLength = readUint16(data, central.localHeaderOffset + 28);
-      const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;
-      const compressed = data.slice(dataStart, dataStart + central.compressedSize);
-      const entryData =
-        central.method === 0 ? compressed : getNodeZlib().inflateRawSync(compressed);
+      const compressed = readZipEntryCompressedData(data, central);
+      const entryData = central.method === 0
+        ? compressed
+        : getNodeZlib().inflateRawSync(compressed);
 
-      entries.push({
-        path: central.path,
-        data: new Uint8Array(entryData),
-        compression: central.method === 0 ? "store" : "deflate",
-        compressedSize: central.compressedSize,
-        uncompressedSize: central.uncompressedSize,
-        crc32: central.crc,
-        modifiedAt: central.modifiedAt
-      });
+      entries.push(buildZipEntry(central, entryData));
     } catch (error) {
       diagnostics.push(
         createDiagnostic(
@@ -111,23 +115,12 @@ export async function readZipPackageAsync(
 
   for (const central of centralDirectory) {
     try {
-      const localNameLength = readUint16(data, central.localHeaderOffset + 26);
-      const localExtraLength = readUint16(data, central.localHeaderOffset + 28);
-      const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;
-      const compressed = data.slice(dataStart, dataStart + central.compressedSize);
+      const compressed = readZipEntryCompressedData(data, central);
       const entryData = central.method === 0
         ? compressed
         : await inflateZipRawAsync(compressed, central.uncompressedSize, central.path, options.inflateRaw);
 
-      entries.push({
-        path: central.path,
-        data: new Uint8Array(entryData),
-        compression: central.method === 0 ? "store" : "deflate",
-        compressedSize: central.compressedSize,
-        uncompressedSize: central.uncompressedSize,
-        crc32: central.crc,
-        modifiedAt: central.modifiedAt
-      });
+      entries.push(buildZipEntry(central, entryData));
     } catch (error) {
       diagnostics.push(
         createDiagnostic(
@@ -144,15 +137,8 @@ export async function readZipPackageAsync(
 }
 
 export function writeZipPackage(entries: ZipEntryInput[], options: ZipWriteOptions = {}): Uint8Array {
-  const timestamp = options.timestamp ?? FIXED_TIMESTAMP;
-  const compression = options.compression ?? "store";
   const order = options.order ?? "stable";
-  const prepared = entries.map((entry) => ({
-    path: normalizeOpcPartPath(entry.path),
-    data: asBytes(entry.data),
-    compression: entry.compression ?? compression,
-    modifiedAt: entry.modifiedAt ?? timestamp
-  }));
+  const prepared = prepareZipEntries(entries, options);
 
   if (order === "stable") {
     prepared.sort((a, b) => compareOpcPartPaths(a.path, b.path));
@@ -163,66 +149,14 @@ export function writeZipPackage(entries: ZipEntryInput[], options: ZipWriteOptio
   let offset = 0;
 
   for (const entry of prepared) {
-    const nameBytes = textEncoder.encode(entry.path);
-    const method = entry.compression === "store" ? 0 : 8;
-    const compressed =
-      entry.compression === "store"
-        ? entry.data
-        : new Uint8Array(getNodeZlib().deflateRawSync(entry.data, { level: options.compressionLevel ?? 9 }));
-    const crc = crc32(entry.data);
-    const dosTime = toDosTime(entry.modifiedAt);
-    const dosDate = toDosDate(entry.modifiedAt);
-    const localHeader = new Uint8Array(30 + nameBytes.length);
-
-    writeUint32(localHeader, 0, LOCAL_FILE_SIGNATURE);
-    writeUint16(localHeader, 4, 20);
-    writeUint16(localHeader, 6, 0x0800);
-    writeUint16(localHeader, 8, method);
-    writeUint16(localHeader, 10, dosTime);
-    writeUint16(localHeader, 12, dosDate);
-    writeUint32(localHeader, 14, crc);
-    writeUint32(localHeader, 18, compressed.length);
-    writeUint32(localHeader, 22, entry.data.length);
-    writeUint16(localHeader, 26, nameBytes.length);
-    writeUint16(localHeader, 28, 0);
-    localHeader.set(nameBytes, 30);
-
-    localParts.push(localHeader, compressed);
-
-    const centralHeader = new Uint8Array(46 + nameBytes.length);
-    writeUint32(centralHeader, 0, CENTRAL_DIRECTORY_SIGNATURE);
-    writeUint16(centralHeader, 4, 20);
-    writeUint16(centralHeader, 6, 20);
-    writeUint16(centralHeader, 8, 0x0800);
-    writeUint16(centralHeader, 10, method);
-    writeUint16(centralHeader, 12, dosTime);
-    writeUint16(centralHeader, 14, dosDate);
-    writeUint32(centralHeader, 16, crc);
-    writeUint32(centralHeader, 20, compressed.length);
-    writeUint32(centralHeader, 24, entry.data.length);
-    writeUint16(centralHeader, 28, nameBytes.length);
-    writeUint16(centralHeader, 30, 0);
-    writeUint16(centralHeader, 32, 0);
-    writeUint16(centralHeader, 34, 0);
-    writeUint16(centralHeader, 36, 0);
-    writeUint32(centralHeader, 38, 0);
-    writeUint32(centralHeader, 42, offset);
-    centralHeader.set(nameBytes, 46);
-    centralParts.push(centralHeader);
-
-    offset += localHeader.length + compressed.length;
+    const serialized = serializeZipEntry(entry, offset, options.compressionLevel);
+    localParts.push(serialized.localHeader, serialized.compressed);
+    centralParts.push(serialized.centralHeader);
+    offset += serialized.localHeader.length + serialized.compressed.length;
   }
 
   const centralDirectory = concatBytes(centralParts);
-  const end = new Uint8Array(22);
-  writeUint32(end, 0, EOCD_SIGNATURE);
-  writeUint16(end, 4, 0);
-  writeUint16(end, 6, 0);
-  writeUint16(end, 8, prepared.length);
-  writeUint16(end, 10, prepared.length);
-  writeUint32(end, 12, centralDirectory.length);
-  writeUint32(end, 16, offset);
-  writeUint16(end, 20, 0);
+  const end = buildEndOfCentralDirectory(prepared.length, centralDirectory.length, offset);
 
   return concatBytes([...localParts, centralDirectory, end]);
 }
@@ -245,6 +179,146 @@ export function upsertZipEntry(
   const next = entries.filter((item) => normalizeOpcPartPath(item.path) !== normalized);
   next.push({ ...entry, path: normalized });
   return next;
+}
+
+function prepareZipEntries(entries: ZipEntryInput[], options: ZipWriteOptions): PreparedZipEntry[] {
+  const timestamp = options.timestamp ?? FIXED_TIMESTAMP;
+  const compression = options.compression ?? "store";
+  return entries.map((entry) => ({
+    path: normalizeOpcPartPath(entry.path),
+    data: asBytes(entry.data),
+    compression: entry.compression ?? compression,
+    modifiedAt: entry.modifiedAt ?? timestamp
+  }));
+}
+
+function serializeZipEntry(
+  entry: PreparedZipEntry,
+  localHeaderOffset: number,
+  compressionLevel: number | undefined
+): SerializedZipEntry {
+  const nameBytes = textEncoder.encode(entry.path);
+  const method = entry.compression === "store" ? 0 : 8;
+  const compressed = compressZipEntryData(entry, compressionLevel);
+  const crc = crc32(entry.data);
+  const dosTime = toDosTime(entry.modifiedAt);
+  const dosDate = toDosDate(entry.modifiedAt);
+  return {
+    localHeader: buildLocalFileHeader(entry, nameBytes, method, compressed.length, crc, dosTime, dosDate),
+    centralHeader: buildCentralDirectoryHeader(
+      entry,
+      nameBytes,
+      method,
+      compressed.length,
+      crc,
+      dosTime,
+      dosDate,
+      localHeaderOffset
+    ),
+    compressed
+  };
+}
+
+function compressZipEntryData(entry: PreparedZipEntry, compressionLevel: number | undefined): Uint8Array {
+  return entry.compression === "store"
+    ? entry.data
+    : new Uint8Array(getNodeZlib().deflateRawSync(entry.data, { level: compressionLevel ?? 9 }));
+}
+
+function buildLocalFileHeader(
+  entry: PreparedZipEntry,
+  nameBytes: Uint8Array,
+  method: number,
+  compressedSize: number,
+  crc: number,
+  dosTime: number,
+  dosDate: number
+): Uint8Array {
+  const localHeader = new Uint8Array(30 + nameBytes.length);
+  writeUint32(localHeader, 0, LOCAL_FILE_SIGNATURE);
+  writeUint16(localHeader, 4, 20);
+  writeUint16(localHeader, 6, ZIP_GENERAL_PURPOSE_FLAG_UTF8);
+  writeUint16(localHeader, 8, method);
+  writeUint16(localHeader, 10, dosTime);
+  writeUint16(localHeader, 12, dosDate);
+  writeUint32(localHeader, 14, crc);
+  writeUint32(localHeader, 18, compressedSize);
+  writeUint32(localHeader, 22, entry.data.length);
+  writeUint16(localHeader, 26, nameBytes.length);
+  writeUint16(localHeader, 28, 0);
+  localHeader.set(nameBytes, 30);
+  return localHeader;
+}
+
+function buildCentralDirectoryHeader(
+  entry: PreparedZipEntry,
+  nameBytes: Uint8Array,
+  method: number,
+  compressedSize: number,
+  crc: number,
+  dosTime: number,
+  dosDate: number,
+  localHeaderOffset: number
+): Uint8Array {
+  const centralHeader = new Uint8Array(46 + nameBytes.length);
+  writeUint32(centralHeader, 0, CENTRAL_DIRECTORY_SIGNATURE);
+  writeUint16(centralHeader, 4, 20);
+  writeUint16(centralHeader, 6, 20);
+  writeUint16(centralHeader, 8, ZIP_GENERAL_PURPOSE_FLAG_UTF8);
+  writeUint16(centralHeader, 10, method);
+  writeUint16(centralHeader, 12, dosTime);
+  writeUint16(centralHeader, 14, dosDate);
+  writeUint32(centralHeader, 16, crc);
+  writeUint32(centralHeader, 20, compressedSize);
+  writeUint32(centralHeader, 24, entry.data.length);
+  writeUint16(centralHeader, 28, nameBytes.length);
+  writeUint16(centralHeader, 30, 0);
+  writeUint16(centralHeader, 32, 0);
+  writeUint16(centralHeader, 34, 0);
+  writeUint16(centralHeader, 36, 0);
+  writeUint32(centralHeader, 38, 0);
+  writeUint32(centralHeader, 42, localHeaderOffset);
+  centralHeader.set(nameBytes, 46);
+  return centralHeader;
+}
+
+function buildEndOfCentralDirectory(
+  entryCount: number,
+  centralDirectorySize: number,
+  centralDirectoryOffset: number
+): Uint8Array {
+  const end = new Uint8Array(22);
+  writeUint32(end, 0, EOCD_SIGNATURE);
+  writeUint16(end, 4, 0);
+  writeUint16(end, 6, 0);
+  writeUint16(end, 8, entryCount);
+  writeUint16(end, 10, entryCount);
+  writeUint32(end, 12, centralDirectorySize);
+  writeUint32(end, 16, centralDirectoryOffset);
+  writeUint16(end, 20, 0);
+  return end;
+}
+
+function readZipEntryCompressedData(data: Uint8Array, central: CentralDirectoryEntry): Uint8Array {
+  const localNameLength = readUint16(data, central.localHeaderOffset + 26);
+  const localExtraLength = readUint16(data, central.localHeaderOffset + 28);
+  const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;
+  return data.slice(dataStart, dataStart + central.compressedSize);
+}
+
+function buildZipEntry(
+  central: CentralDirectoryEntry,
+  entryData: Uint8Array | Buffer
+): ZipEntry {
+  return {
+    path: central.path,
+    data: new Uint8Array(entryData),
+    compression: central.method === 0 ? "store" : "deflate",
+    compressedSize: central.compressedSize,
+    uncompressedSize: central.uncompressedSize,
+    crc32: central.crc,
+    modifiedAt: central.modifiedAt
+  };
 }
 
 function readCentralDirectory(data: Uint8Array, diagnostics: OfficeDiagnostic[]): CentralDirectoryEntry[] {
