@@ -3,6 +3,7 @@ import {
   buildOpcContentTypesXml,
   buildOpcRelationshipsPath,
   buildOpcRelationshipsXml,
+  escapeXmlAttribute,
   escapeXmlText,
   listOfficeMediaParts,
   normalizeOpcPartPath,
@@ -86,6 +87,19 @@ describe("OPC helpers", () => {
 
   it("sanitizes XML text before escaping", () => {
     expect(sanitizeXmlText("ok\u0000text")).toBe("oktext");
+    expect(sanitizeXmlText("😀 🐇 𠮷野家")).toBe("😀 🐇 𠮷野家");
     expect(escapeXmlText("a\u0000<&>")).toBe("a&lt;&amp;&gt;");
+    expect(escapeXmlText("😀 🐇 𠮷野家<&>")).toBe("😀 🐇 𠮷野家&lt;&amp;&gt;");
+    expect(escapeXmlAttribute("😀 🐇 𠮷野家\"'&<>")).toBe(
+      "😀 🐇 𠮷野家&quot;&apos;&amp;&lt;&gt;"
+    );
+  });
+
+  it("keeps only XML 1.0 character ranges", () => {
+    const validBoundaries = "\uD7FF\uE000\uFFFD\u{10000}\u{10FFFF}";
+    expect(sanitizeXmlText(validBoundaries)).toBe(validBoundaries);
+    expect(sanitizeXmlText("before\uD800after")).toBe("beforeafter");
+    expect(sanitizeXmlText("before\uDC00after")).toBe("beforeafter");
+    expect(sanitizeXmlText("before\uFFFE\uFFFFafter")).toBe("beforeafter");
   });
 });

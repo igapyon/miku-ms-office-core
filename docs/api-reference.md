@@ -1,6 +1,6 @@
 # API Reference
 
-Checked on 2026-06-22.
+Checked on 2026-07-18.
 
 This is the current public API surface for the initial low-level foundation.
 It is intentionally package plumbing, not DOCX/XLSX/PPTX/MS Project semantics.
@@ -74,6 +74,9 @@ interpret MS Project data.
 
 These are small string-level helpers. DOM traversal and product XML semantics
 remain product-side unless repeated package-level needs appear.
+`sanitizeXmlText` follows the XML 1.0 `Char` production: it preserves valid
+supplementary Unicode code points through `U+10FFFF`, while removing invalid
+control characters, isolated UTF-16 surrogates, `U+FFFE`, and `U+FFFF`.
 
 ## Binary Helpers
 

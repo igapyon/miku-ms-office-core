@@ -145,6 +145,38 @@ Update this section while working. Do not rewrite unrelated TODO items.
 - [x] Bump package metadata from `0.5.0` to `0.5.1`.
 - [x] Decide whether core ZIP writing needs an explicit UTF-8 flag policy before
   replacing `miku-xlsx2md` `createStoredZip` or `mikuproject` `packZip`.
+
+#### XML Sanitizer Supplementary Unicode Fix (`0.6.0`)
+
+- [x] Update the Node.js `sanitizeXmlText` implementation to follow the exact
+  XML 1.0 `Char` production: preserve `#x9`, `#xA`, `#xD`,
+  `#x20-#xD7FF`, `#xE000-#xFFFD`, and `#x10000-#x10FFFF`; reject XML
+  control characters, isolated UTF-16 surrogates, `U+FFFE`, and `U+FFFF`.
+- [x] Add Node.js regression tests for supplementary characters such as
+  `😀 🐇 𠮷野家`, existing control-character removal, text and attribute
+  escaping, isolated high and low surrogates, and the XML boundary code points
+  `U+D7FF`, `U+E000`, `U+FFFD`, `U+10000`, and `U+10FFFF`.
+- [x] Apply the equivalent fix to sibling `miku-ms-office-core-java` by
+  iterating with `codePointAt`, `Character.charCount`, and `appendCodePoint`,
+  while keeping the same exact XML 1.0 ranges as the Node.js implementation.
+- [x] Add matching Java regression cases and update the Java upstream test
+  mapping or follow-up record so Node/Java sanitizer parity remains traceable.
+- [x] Run focused XML helper tests and the full Node.js and Java verification
+  suites; confirm the public API signatures remain unchanged and generated XML
+  preserves valid supplementary characters without retaining invalid XML
+  characters.
+- [x] Update both core versions from `0.5.1` to `0.6.0`, update relevant API or
+  maintenance documentation, rebuild the Node.js library bundle and source map,
+  and prepare and verify the Node.js and Java release artifacts locally.
+- [x] Audit downstream products for both vendored core `0.5.1` artifacts and
+  product-local duplicate XML sanitizers, including `miku-md2xlsx` and
+  `mikuproject`; add product-level regressions where XML text is generated.
+  See `docs/xml-sanitizer-unicode-fix.md` for the changed consumer repository
+  list, local commit IDs, verification, and post-release vendor inventory.
+- [ ] After the human-owned `0.6.0` releases are published, update downstream
+  vendored assets or Java dependencies and run each affected product's focused
+  and full regression commands.
+
 - [ ] Add a focused PPTX package fixture when PPTX read/write candidates become
   active.
 
