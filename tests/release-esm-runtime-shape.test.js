@@ -31,14 +31,14 @@ describe("release ESM runtime shape", () => {
     };
     const api = vm.runInNewContext(`${iifeBuild.code}; MikuMsOfficeCore;`, context);
 
-    const zip = api.writeZipPackage([
+    const zip = await api.writeZipPackage([
       {
         path: "word/document.xml",
         data: new TextEncoder().encode("<w:document/>"),
         compression: "store"
       }
     ]);
-    const result = api.readZipPackage(zip);
+    const result = await api.readZipPackage(zip);
 
     expect(result.diagnostics).toEqual([]);
     expect(result.entries).toHaveLength(1);

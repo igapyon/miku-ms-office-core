@@ -14,7 +14,7 @@ const REL_WORKSHEET = "http://schemas.openxmlformats.org/officeDocument/2006/rel
 
 async function readFixturePackage(name) {
   const bytes = new Uint8Array(await readFile(`${FIXTURE_DIR}/${name}`));
-  return readOfficePackage(bytes);
+  return await readOfficePackage(bytes);
 }
 
 describe("real Office package fixtures", () => {

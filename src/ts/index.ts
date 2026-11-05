@@ -6,3 +6,4 @@ export * from "./opc-part-path.js";
 export * from "./opc-relationships.js";
 export * from "./xml-helper.js";
 export * from "./zip-package.js";
+export { ZipError } from "./zip-errors.js";

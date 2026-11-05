@@ -64,24 +64,24 @@ The initial package layer is TypeScript / Node.js and keeps runtime behavior
 local-first.
 
 GitHub Actions CI is defined in `.github/workflows/ci.yml`. It runs on branch
-pushes, `v*` tag pushes, pull requests, and manual dispatch. The job runs
-install, test, audit, package build, library bundle build, bundle smoke, and
-package artifact dry-run checks.
+pushes, `v*` tag pushes, pull requests, and manual dispatch. Node tests run on
+Node 22 and 24. A Node 24 browser job builds the module and declarations,
+checks the staged assets, and runs Chromium, Firefox, and WebKit acceptance.
 
 GitHub Release package upload is defined in
 `.github/workflows/release-library-bundle.yml`. It runs on `v*` tag pushes, or
-manual dispatch with an existing `v*` tag, verifies the package, creates the
-single-file ESM library bundle `bundle/miku-ms-office-core.mjs`, smoke-tests its
-exports, and uploads it as a GitHub Release asset. This asset is for miku-soft
-products that need to include a generated library file; it is not a CLI runtime
-bundle and does not publish to npm.
+manual dispatch with an existing `v*` tag. Before upload it runs unit, type,
+staged-asset, and three-browser checks, then uploads the versioned ESM, source
+map, and declaration as GitHub Release assets. It does not publish to npm or
+create a CLI runtime bundle.
 
 ## Current API Shape
 
 The current foundation exposes low-level helpers for:
 
 - reproducible ZIP package reading and writing
-- async ZIP package reading for read-side runtime experiments
+- Promise-based ZIP and Office package reading and ZIP writing
+- bounded ZIP32 processing, CRC checks, and abort support
 - OPC part path normalization and relationship target resolution
 - relationship XML parsing and generation
 - `[Content_Types].xml` parsing and generation
@@ -89,15 +89,18 @@ The current foundation exposes low-level helpers for:
 - XML escaping, sanitization, entity decoding, and small attribute parsing
 - structured diagnostics
 
-Synchronous ZIP APIs are Node-oriented and use `node:zlib` for deflate
-compression/decompression. Async read APIs try `DecompressionStream` for
-`deflate-raw` first and fall back to Node zlib; callers can also inject their
-own raw-deflate inflater.
+ZIP read/write APIs always return Promises and use standard
+`CompressionStream` / `DecompressionStream` with `deflate-raw` when DEFLATE is
+requested. STORE remains the writer default. The core has no Node runtime
+imports; the package requires Node 22 or newer and the same built module works
+in browser ESM, IIFE, and Worker contexts that provide the raw compression
+format.
 
 Product repositories that already use ESM package imports can consume the
-package directly. Products that need to include a generated library file can use
-the release asset `miku-ms-office-core-<version>.mjs`. Browser or IIFE runtime
-integration still needs an explicit product-side decision before migration.
+package directly. The versioned release asset set is
+`miku-ms-office-core-<version>.mjs`, its `.mjs.map`, and `.d.mts` declaration.
+The browser and IIFE implementation is verified in this core repository;
+product migration remains a separate task.
 
 Package consumption details are recorded in `docs/package-consumption.md`.
 The current public API surface is summarized in `docs/api-reference.md`.

@@ -1,7 +1,27 @@
-import { asBytes, concatBytes, readUint16, readUint32, textDecoder, textEncoder, writeUint16, writeUint32 } from "./binary-io.js";
+import { concatBytes, textDecoder, textEncoder, writeUint16, writeUint32 } from "./binary-io.js";
 import { crc32 } from "./crc32.js";
 import { createDiagnostic, type OfficeDiagnostic } from "./diagnostics.js";
 import { compareOpcPartPaths, normalizeOpcPartPath } from "./opc-part-path.js";
+import { ZipError } from "./zip-errors.js";
+import { deflateRawBytes, inflateRawBytes } from "./zip-streams.js";
+import { readCentralDirectory, readZipEntryCompressedData, type CentralDirectoryEntry } from "./zip-validation.js";
+import {
+  DEFAULT_ZIP_READ_LIMITS,
+  DEFAULT_ZIP_WRITE_LIMITS,
+  cloneDate,
+  entryByteLength,
+  normalizeInputPath,
+  resolveLimits,
+  snapshotEntryBytes,
+  validateEntryShape,
+  validateReadArguments,
+  validateWriteArguments,
+  type ZipReadLimits,
+  type ZipWriteLimits
+} from "./zip-validation.js";
+
+export { DEFAULT_ZIP_READ_LIMITS, DEFAULT_ZIP_WRITE_LIMITS } from "./zip-validation.js";
+export type { ZipReadLimits, ZipWriteLimits } from "./zip-validation.js";
 
 export type ZipCompressionMethod = "store" | "deflate";
 
@@ -28,30 +48,29 @@ export interface ZipReadResult {
 }
 
 export interface ZipReadOptions {
-  inflateRaw?: (data: Uint8Array, expectedSize: number, path: string) => Uint8Array | Promise<Uint8Array>;
+  limits?: Partial<ZipReadLimits>;
+  signal?: AbortSignal;
 }
 
 export interface ZipWriteOptions {
   timestamp?: Date;
   compression?: ZipCompressionMethod;
   order?: "stable" | "input";
-  compressionLevel?: number;
-}
-
-interface CentralDirectoryEntry {
-  path: string;
-  method: number;
-  flags: number;
-  crc: number;
-  compressedSize: number;
-  uncompressedSize: number;
-  localHeaderOffset: number;
-  modifiedAt: Date;
+  limits?: Partial<ZipWriteLimits>;
+  signal?: AbortSignal;
 }
 
 interface PreparedZipEntry {
   path: string;
   data: Uint8Array;
+  compression: ZipCompressionMethod;
+  modifiedAt: Date;
+}
+
+interface PendingZipEntry {
+  path: string;
+  data: Uint8Array | string;
+  byteLength: number;
   compression: ZipCompressionMethod;
   modifiedAt: Date;
 }
@@ -68,77 +87,79 @@ const LOCAL_FILE_SIGNATURE = 0x04034b50;
 const ZIP_GENERAL_PURPOSE_FLAG_UTF8 = 0x0800;
 const FIXED_TIMESTAMP = new Date(Date.UTC(1980, 0, 1, 0, 0, 0));
 
-interface NodeZlibLike {
-  deflateRawSync(data: Uint8Array, options?: { level?: number }): Uint8Array | Buffer;
-  inflateRawSync(data: Uint8Array): Uint8Array | Buffer;
-}
-
 export function getDefaultZipEntryTimestamp(): Date {
   return new Date(FIXED_TIMESTAMP.getTime());
 }
 
-export function readZipPackage(data: Uint8Array): ZipReadResult {
+export async function readZipPackage(data: Uint8Array, options: ZipReadOptions = {}): Promise<ZipReadResult> {
+  validateReadArguments(data, options);
+  const limits = resolveLimits(DEFAULT_ZIP_READ_LIMITS, options.limits);
+  const signal = options.signal;
+  throwIfAborted(signal);
+  if (data.byteLength > limits.maxInputBytes) {
+    return zipFailure("zip.limit.exceeded", "ZIP input exceeds the configured limit.");
+  }
+  const snapshot = new Uint8Array(data);
   const diagnostics: OfficeDiagnostic[] = [];
   const entries: ZipEntry[] = [];
-  const centralDirectory = readCentralDirectory(data, diagnostics);
-
+  const centralDirectory = readCentralDirectory(snapshot, diagnostics, limits.maxEntries);
+  if (diagnostics.length > 0) return { entries: [], diagnostics };
+  if (centralDirectory.length > limits.maxEntries) return zipFailure("zip.limit.exceeded", "ZIP entry count exceeds the configured limit.");
+  let declaredTotal = 0;
   for (const central of centralDirectory) {
+    if (central.uncompressedSize > limits.maxEntryBytes) return zipFailure("zip.limit.exceeded", "ZIP entry exceeds the configured limit.", central.path);
+    declaredTotal += central.uncompressedSize;
+    if (!Number.isSafeInteger(declaredTotal) || declaredTotal > limits.maxTotalBytes) {
+      return zipFailure("zip.limit.exceeded", "ZIP total uncompressed size exceeds the configured limit.", central.path);
+    }
+  }
+  let actualTotal = 0;
+  for (const central of centralDirectory) {
+    throwIfAborted(signal);
     try {
-      const compressed = readZipEntryCompressedData(data, central);
+      const compressed = readZipEntryCompressedData(snapshot, central);
       const entryData = central.method === 0
-        ? compressed
-        : getNodeZlib().inflateRawSync(compressed);
-
-      entries.push(buildZipEntry(central, entryData));
+        ? new Uint8Array(compressed)
+        : await inflateRawBytes(compressed, Math.min(limits.maxEntryBytes, limits.maxTotalBytes - actualTotal), central.uncompressedSize, central.path, signal);
+      throwIfAborted(signal);
+      if (entryData.byteLength !== central.uncompressedSize) {
+        return zipFailure("zip.entry.size_mismatch", `ZIP entry size mismatch: ${central.path}`, central.path);
+      }
+      if (crc32(entryData) !== central.crc) {
+        return zipFailure("zip.entry.crc_mismatch", `ZIP entry CRC mismatch: ${central.path}`, central.path);
+      }
+      actualTotal += entryData.byteLength;
+      if (!central.isDirectory) entries.push(buildZipEntry(central, entryData));
     } catch (error) {
+      if (isAbortError(error)) throw abortError();
+      if (!(error instanceof ZipError)) throw error;
+      if (error.code === "zip.runtime.unsupported") throw error;
       diagnostics.push(
         createDiagnostic(
           "error",
-          "zip.entry.read_failed",
-          error instanceof Error ? error.message : String(error),
+          error.code,
+          error.message,
           central.path
         )
       );
+      return { entries: [], diagnostics };
     }
   }
 
   return { entries, diagnostics };
 }
 
-export async function readZipPackageAsync(
-  data: Uint8Array,
-  options: ZipReadOptions = {}
-): Promise<ZipReadResult> {
-  const diagnostics: OfficeDiagnostic[] = [];
-  const entries: ZipEntry[] = [];
-  const centralDirectory = readCentralDirectory(data, diagnostics);
+/** @deprecated Use readZipPackage; retained as the same function reference for 1.x. */
+export const readZipPackageAsync = readZipPackage;
 
-  for (const central of centralDirectory) {
-    try {
-      const compressed = readZipEntryCompressedData(data, central);
-      const entryData = central.method === 0
-        ? compressed
-        : await inflateZipRawAsync(compressed, central.uncompressedSize, central.path, options.inflateRaw);
-
-      entries.push(buildZipEntry(central, entryData));
-    } catch (error) {
-      diagnostics.push(
-        createDiagnostic(
-          "error",
-          "zip.entry.read_failed",
-          error instanceof Error ? error.message : String(error),
-          central.path
-        )
-      );
-    }
-  }
-
-  return { entries, diagnostics };
-}
-
-export function writeZipPackage(entries: ZipEntryInput[], options: ZipWriteOptions = {}): Uint8Array {
+export async function writeZipPackage(entries: ZipEntryInput[], options: ZipWriteOptions = {}): Promise<Uint8Array> {
+  validateWriteArguments(entries, options);
+  const limits = resolveLimits(DEFAULT_ZIP_WRITE_LIMITS, options.limits);
+  const signal = options.signal;
+  throwIfAborted(signal);
+  const timestamp = options.timestamp === undefined ? FIXED_TIMESTAMP : cloneDate(options.timestamp, "timestamp");
   const order = options.order ?? "stable";
-  const prepared = prepareZipEntries(entries, options);
+  const prepared = snapshotWriteEntries(entries, options, timestamp, limits);
 
   if (order === "stable") {
     prepared.sort((a, b) => compareOpcPartPaths(a.path, b.path));
@@ -147,15 +168,28 @@ export function writeZipPackage(entries: ZipEntryInput[], options: ZipWriteOptio
   const localParts: Uint8Array[] = [];
   const centralParts: Uint8Array[] = [];
   let offset = 0;
+  let centralSize = 0;
 
   for (const entry of prepared) {
-    const serialized = serializeZipEntry(entry, offset, options.compressionLevel);
+    throwIfAborted(signal);
+    const nameLength = textEncoder.encode(entry.path).byteLength;
+    const remainingCompressedBudget = limits.maxOutputBytes - offset - centralSize - (30 + nameLength) - (46 + nameLength) - 22;
+    if (remainingCompressedBudget < 0 || offset > 0xfffffffe) throw new ZipError("zip.limit.exceeded", "ZIP output exceeds the configured ZIP32/output limit.", entry.path);
+    const serialized = await serializeZipEntry(entry, offset, remainingCompressedBudget, signal);
+    throwIfAborted(signal);
+    if (serialized.compressed.length > 0xfffffffe || entry.data.length > 0xfffffffe) throw new ZipError("zip.limit.exceeded", "ZIP entry exceeds ZIP32 size limits.", entry.path);
     localParts.push(serialized.localHeader, serialized.compressed);
     centralParts.push(serialized.centralHeader);
     offset += serialized.localHeader.length + serialized.compressed.length;
+    centralSize += serialized.centralHeader.length;
+    if (offset + centralSize + 22 > limits.maxOutputBytes) {
+      throw new ZipError("zip.limit.exceeded", "ZIP output exceeds the configured limit.");
+    }
   }
 
+  if (offset + centralSize + 22 > limits.maxOutputBytes) throw new ZipError("zip.limit.exceeded", "ZIP output exceeds the configured limit.");
   const centralDirectory = concatBytes(centralParts);
+  if (centralDirectory.length > 0xfffffffe || offset > 0xfffffffe) throw new ZipError("zip.limit.exceeded", "ZIP central directory exceeds ZIP32 limits.");
   const end = buildEndOfCentralDirectory(prepared.length, centralDirectory.length, offset);
 
   return concatBytes([...localParts, centralDirectory, end]);
@@ -181,25 +215,57 @@ export function upsertZipEntry(
   return next;
 }
 
-function prepareZipEntries(entries: ZipEntryInput[], options: ZipWriteOptions): PreparedZipEntry[] {
-  const timestamp = options.timestamp ?? FIXED_TIMESTAMP;
+function snapshotWriteEntries(entries: ZipEntryInput[], options: ZipWriteOptions, timestamp: Date, limits: ZipWriteLimits): PreparedZipEntry[] {
   const compression = options.compression ?? "store";
-  return entries.map((entry) => ({
-    path: normalizeOpcPartPath(entry.path),
-    data: asBytes(entry.data),
-    compression: entry.compression ?? compression,
-    modifiedAt: entry.modifiedAt ?? timestamp
-  }));
+  if (entries.length > limits.maxEntries || entries.length > 0xfffe) throw new ZipError("zip.limit.exceeded", "ZIP entry count exceeds the configured ZIP32/output limit.");
+  const pending: PendingZipEntry[] = [];
+  const paths = new Set<string>();
+  let total = 0;
+  for (const input of entries) {
+    validateEntryShape(input);
+    if (entryByteLength(input.path) > 0xffff) throw new ZipError("zip.limit.exceeded", "ZIP entry name exceeds ZIP32 limits.", input.path);
+    if (input.path.startsWith("/") || input.path.startsWith("\\")) {
+      throw new ZipError("zip.path.invalid", "ZIP entry path must be relative.", input.path);
+    }
+    const path = normalizeInputPath(input.path);
+    if (input.path.endsWith("/") || input.path.endsWith("\\")) throw new ZipError("zip.path.invalid", "The ZIP writer accepts file entries only.", input.path);
+    const nameLength = entryByteLength(path);
+    if (nameLength === 0 || nameLength > 0xffff) throw new ZipError("zip.limit.exceeded", "ZIP entry name exceeds ZIP32 limits.", path);
+    if (paths.has(path)) throw new ZipError("zip.path.duplicate", `Duplicate ZIP entry path: ${path}`, path);
+    paths.add(path);
+    const entryCompression = input.compression ?? compression;
+    if (entryCompression !== "store" && entryCompression !== "deflate") {
+      throw new ZipError("zip.options.invalid", `Unsupported ZIP compression: ${String(entryCompression)}`, path);
+    }
+    const byteLength = entryByteLength(input.data);
+    if (byteLength > 0xfffffffe) throw new ZipError("zip.limit.exceeded", "ZIP entry exceeds ZIP32 size limits.", path);
+    if (byteLength > limits.maxEntryBytes) throw new ZipError("zip.limit.exceeded", "ZIP entry exceeds the configured limit.", path);
+    total += byteLength;
+    if (!Number.isSafeInteger(total) || total > limits.maxTotalBytes) throw new ZipError("zip.limit.exceeded", "ZIP total input size exceeds the configured limit.", path);
+    const modifiedAt = input.modifiedAt === undefined ? new Date(timestamp.getTime()) : cloneDate(input.modifiedAt, "modifiedAt");
+    pending.push({ path, data: input.data, byteLength, compression: entryCompression, modifiedAt });
+  }
+  return pending.map((entry) => {
+    return {
+      path: entry.path,
+      data: snapshotEntryBytes(entry.data, entry.byteLength),
+      compression: entry.compression,
+      modifiedAt: entry.modifiedAt
+    };
+  });
 }
 
-function serializeZipEntry(
+async function serializeZipEntry(
   entry: PreparedZipEntry,
   localHeaderOffset: number,
-  compressionLevel: number | undefined
-): SerializedZipEntry {
+  maxOutputBytes: number,
+  signal?: AbortSignal
+): Promise<SerializedZipEntry> {
   const nameBytes = textEncoder.encode(entry.path);
   const method = entry.compression === "store" ? 0 : 8;
-  const compressed = compressZipEntryData(entry, compressionLevel);
+  const compressed = entry.compression === "store"
+    ? entry.data
+    : await deflateRawBytes(entry.data, maxOutputBytes, signal);
   const crc = crc32(entry.data);
   const dosTime = toDosTime(entry.modifiedAt);
   const dosDate = toDosDate(entry.modifiedAt);
@@ -217,12 +283,6 @@ function serializeZipEntry(
     ),
     compressed
   };
-}
-
-function compressZipEntryData(entry: PreparedZipEntry, compressionLevel: number | undefined): Uint8Array {
-  return entry.compression === "store"
-    ? entry.data
-    : new Uint8Array(getNodeZlib().deflateRawSync(entry.data, { level: compressionLevel ?? 9 }));
 }
 
 function buildLocalFileHeader(
@@ -299,16 +359,9 @@ function buildEndOfCentralDirectory(
   return end;
 }
 
-function readZipEntryCompressedData(data: Uint8Array, central: CentralDirectoryEntry): Uint8Array {
-  const localNameLength = readUint16(data, central.localHeaderOffset + 26);
-  const localExtraLength = readUint16(data, central.localHeaderOffset + 28);
-  const dataStart = central.localHeaderOffset + 30 + localNameLength + localExtraLength;
-  return data.slice(dataStart, dataStart + central.compressedSize);
-}
-
 function buildZipEntry(
   central: CentralDirectoryEntry,
-  entryData: Uint8Array | Buffer
+  entryData: Uint8Array
 ): ZipEntry {
   return {
     path: central.path,
@@ -321,69 +374,6 @@ function buildZipEntry(
   };
 }
 
-function readCentralDirectory(data: Uint8Array, diagnostics: OfficeDiagnostic[]): CentralDirectoryEntry[] {
-  const eocdOffset = findEndOfCentralDirectory(data);
-  if (eocdOffset < 0) {
-    diagnostics.push(createDiagnostic("error", "zip.eocd.missing", "End of central directory was not found."));
-    return [];
-  }
-
-  const entryCount = readUint16(data, eocdOffset + 10);
-  const centralDirectoryOffset = readUint32(data, eocdOffset + 16);
-  const entries: CentralDirectoryEntry[] = [];
-  let offset = centralDirectoryOffset;
-
-  for (let index = 0; index < entryCount; index += 1) {
-    if (readUint32(data, offset) !== CENTRAL_DIRECTORY_SIGNATURE) {
-      diagnostics.push(createDiagnostic("error", "zip.central_directory.invalid", "Central directory entry signature is invalid."));
-      break;
-    }
-
-    const flags = readUint16(data, offset + 8);
-    const method = readUint16(data, offset + 10);
-    const time = readUint16(data, offset + 12);
-    const date = readUint16(data, offset + 14);
-    const crc = readUint32(data, offset + 16);
-    const compressedSize = readUint32(data, offset + 20);
-    const uncompressedSize = readUint32(data, offset + 24);
-    const fileNameLength = readUint16(data, offset + 28);
-    const extraLength = readUint16(data, offset + 30);
-    const commentLength = readUint16(data, offset + 32);
-    const localHeaderOffset = readUint32(data, offset + 42);
-    const nameStart = offset + 46;
-    const path = textDecoder.decode(data.slice(nameStart, nameStart + fileNameLength));
-
-    if (method !== 0 && method !== 8) {
-      diagnostics.push(createDiagnostic("error", "zip.compression.unsupported", `Unsupported ZIP compression method: ${method}`, path));
-    } else {
-      entries.push({
-        path: normalizeOpcPartPath(path),
-        method,
-        flags,
-        crc,
-        compressedSize,
-        uncompressedSize,
-        localHeaderOffset,
-        modifiedAt: fromDosDateTime(date, time)
-      });
-    }
-
-    offset = nameStart + fileNameLength + extraLength + commentLength;
-  }
-
-  return entries;
-}
-
-function findEndOfCentralDirectory(data: Uint8Array): number {
-  const minOffset = Math.max(0, data.length - 0xffff - 22);
-  for (let offset = data.length - 22; offset >= minOffset; offset -= 1) {
-    if (readUint32(data, offset) === EOCD_SIGNATURE) {
-      return offset;
-    }
-  }
-  return -1;
-}
-
 function toDosTime(date: Date): number {
   return (date.getUTCHours() << 11) | (date.getUTCMinutes() << 5) | Math.floor(date.getUTCSeconds() / 2);
 }
@@ -393,69 +383,18 @@ function toDosDate(date: Date): number {
   return ((year - 1980) << 9) | ((date.getUTCMonth() + 1) << 5) | date.getUTCDate();
 }
 
-function fromDosDateTime(date: number, time: number): Date {
-  const year = 1980 + ((date >>> 9) & 0x7f);
-  const month = (date >>> 5) & 0x0f;
-  const day = date & 0x1f;
-  const hour = (time >>> 11) & 0x1f;
-  const minute = (time >>> 5) & 0x3f;
-  const second = (time & 0x1f) * 2;
-  return new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+function throwIfAborted(signal?: AbortSignal): void {
+  if (signal?.aborted) throw abortError();
 }
 
-async function inflateZipRawAsync(
-  compressed: Uint8Array,
-  expectedSize: number,
-  path: string,
-  customInflateRaw?: ZipReadOptions["inflateRaw"]
-): Promise<Uint8Array> {
-  const inflated = customInflateRaw === undefined
-    ? await defaultInflateZipRawAsync(compressed)
-    : await customInflateRaw(compressed, expectedSize, path);
-  const bytes = new Uint8Array(inflated);
-  if (bytes.length !== expectedSize) {
-    throw new Error(`Deflated ZIP entry size mismatch: ${path}`);
-  }
-  return bytes;
+function abortError(): DOMException {
+  return new DOMException("The operation was aborted.", "AbortError");
 }
 
-async function defaultInflateZipRawAsync(compressed: Uint8Array): Promise<Uint8Array> {
-  const runtime = globalThis as typeof globalThis & {
-    DecompressionStream?: new (format: string) => TransformStream<Uint8Array, Uint8Array>;
-  };
-
-  if (typeof runtime.DecompressionStream === "function") {
-    try {
-      const stream = new Blob([compressed as unknown as BlobPart]).stream().pipeThrough(new runtime.DecompressionStream("deflate-raw"));
-      const buffer = await new Response(stream).arrayBuffer();
-      return new Uint8Array(buffer);
-    } catch (_error) {
-      // Fall through to the Node zlib path when a runtime exposes
-      // DecompressionStream but does not support "deflate-raw".
-    }
-  }
-
-  return new Uint8Array(getNodeZlib().inflateRawSync(compressed));
+function isAbortError(error: unknown): boolean {
+  return error instanceof Error && error.name === "AbortError";
 }
 
-function getNodeZlib(): NodeZlibLike {
-  const runtime = globalThis as typeof globalThis & {
-    process?: {
-      getBuiltinModule?: (specifier: string) => unknown;
-    };
-  };
-  const getBuiltinModule = runtime.process?.getBuiltinModule;
-  const zlib = typeof getBuiltinModule === "function"
-    ? getBuiltinModule("node:zlib") ?? getBuiltinModule("zlib")
-    : undefined;
-
-  if (
-    zlib !== undefined &&
-    typeof (zlib as NodeZlibLike).deflateRawSync === "function" &&
-    typeof (zlib as NodeZlibLike).inflateRawSync === "function"
-  ) {
-    return zlib as NodeZlibLike;
-  }
-
-  throw new Error("Node zlib is required for synchronous ZIP deflate operations. Use stored entries, readZipPackageAsync with DecompressionStream, or inject an async inflater.");
+function zipFailure(code: string, message: string, path?: string): ZipReadResult {
+  return { entries: [], diagnostics: [createDiagnostic("error", code, message, path)] };
 }

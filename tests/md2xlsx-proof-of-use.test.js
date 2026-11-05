@@ -52,12 +52,12 @@ function buildMd2XlsxLikeContentTypes(sheetCount, drawingCount, mediaExtensions)
 }
 
 describe("miku-md2xlsx proof-of-use package plumbing", () => {
-  it("builds an XLSX-like package shell without workbook semantics in core", () => {
+  it("builds an XLSX-like package shell without workbook semantics in core", async () => {
     const mediaEntries = [
       { path: "xl/media/image1.png", data: new Uint8Array([1, 2, 3]) },
       { path: "xl/media/image2.jpg", data: new Uint8Array([4, 5, 6]) }
     ];
-    const packageBytes = writeZipPackage([
+    const packageBytes = await writeZipPackage([
       {
         path: "[Content_Types].xml",
         data: buildMd2XlsxLikeContentTypes(2, 1, ["png", "jpg"])
@@ -101,7 +101,7 @@ describe("miku-md2xlsx proof-of-use package plumbing", () => {
       ...mediaEntries
     ]);
 
-    const readResult = readZipPackage(packageBytes);
+    const readResult = await readZipPackage(packageBytes);
 
     expect(readResult.diagnostics).toEqual([]);
     expect(readResult.entries.map((entry) => entry.path)).toEqual([

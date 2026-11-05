@@ -15,6 +15,37 @@ update_when:
 This file records important decisions for the AI agent.
 Read this before making or revisiting decisions, especially when the work seems to loop.
 
+## 2026-11-04: Standard Streams ZIP APIs for #11
+
+Status: implemented on 2026-11-05; the user-confirmed package version is 0.8.0.
+The initial implementation used the plan's 1.0.0 proposal, later corrected by
+the user. Design baseline: 0.6.0.
+
+Decision:
+Use standard raw CompressionStream / DecompressionStream for async ZIP and
+Office package APIs in Node22+, browser ESM, IIFE, and Worker environments.
+The 0.8.0 API removes Node zlib fallback and inflater injection, keeps
+the existing Async read names as deprecated aliases, and retains STORE as the
+writer default. Runtime-independent helpers stay synchronous.
+
+Reason:
+Current compressed synchronous read/write paths need Node zlib even when the
+bundle can load in a browser. A shared async contract makes the runtime
+requirements explicit and can be verified with the same generated artifact.
+
+Boundary:
+Product migration and #10's file-backed streaming writer remain later work.
+Node file adapters must stay separate from the universal core. Earlier
+Node-oriented runtime decisions describe 0.6.0 and are superseded for 0.8.0.
+See `docs/zip-browser-api-plan.md` for exact contracts and P1–P6 gates.
+
+Verification record:
+The Node22/24 CI matrix and Node24 Playwright job are configured. Local
+acceptance ran on Node26.12.1 and macOS 27.0.1 arm64. Chromium 156.0.8078.4,
+Firefox 157.0, and WebKit 27.2 each passed ESM, offline IIFE, and Blob Worker
+DEFLATE tests. Issue #10, product migration, commit, push, tag, and release
+publication remain outside this implementation.
+
 ## 2026-06-22: Keep miku-ms-office-core Below Document Meaning
 
 Reason:

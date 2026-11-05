@@ -23,7 +23,8 @@ if (
 
 const expectedAssets = [
   `${packageName}-${version}.mjs`,
-  `${packageName}-${version}.mjs.map`
+  `${packageName}-${version}.mjs.map`,
+  `${packageName}-${version}.d.mts`
 ];
 const localAssetPaths = new Map(
   expectedAssets.map((name) => [name, `release-assets/${name}`])

@@ -82,7 +82,7 @@ function buildMd2DocxLikeDocumentRelationships(productRelationships) {
 }
 
 describe("miku-md2docx proof-of-use package plumbing", () => {
-  it("builds a DOCX-like package shell without DOCX document semantics in core", () => {
+  it("builds a DOCX-like package shell without DOCX document semantics in core", async () => {
     const imageEntries = [
       { path: "word/media/image1.gif", data: new Uint8Array([1, 2, 3]) },
       { path: "word/media/image2.bin", data: new Uint8Array([4, 5, 6]) }
@@ -97,7 +97,7 @@ describe("miku-md2docx proof-of-use package plumbing", () => {
       { id: "rId2", type: REL_IMAGE, target: "media/image1.gif" }
     ]);
 
-    const packageBytes = writeZipPackage([
+    const packageBytes = await writeZipPackage([
       { path: "[Content_Types].xml", data: buildMd2DocxLikeContentTypes(imageEntries) },
       {
         path: "_rels/.rels",
@@ -114,7 +114,7 @@ describe("miku-md2docx proof-of-use package plumbing", () => {
       ...imageEntries
     ]);
 
-    const readResult = readZipPackage(packageBytes);
+    const readResult = await readZipPackage(packageBytes);
 
     expect(readResult.diagnostics).toEqual([]);
     expect(readResult.entries.map((entry) => entry.path)).toEqual([

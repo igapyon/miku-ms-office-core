@@ -2,7 +2,7 @@ import { parseOpcContentTypesXml, type OpcContentTypes } from "./opc-content-typ
 import { createDiagnostic, type OfficeDiagnostic } from "./diagnostics.js";
 import { buildOpcRelationshipsPath, normalizeOpcPartPath } from "./opc-part-path.js";
 import { parseOpcRelationshipsXml, resolveOpcRelationships, type OpcRelationship } from "./opc-relationships.js";
-import { getZipTextEntry, readZipPackage, readZipPackageAsync, type ZipEntry, type ZipReadOptions } from "./zip-package.js";
+import { getZipTextEntry, readZipPackage, type ZipEntry, type ZipReadOptions } from "./zip-package.js";
 
 export interface OfficePackage {
   entries: ZipEntry[];
@@ -14,21 +14,22 @@ export interface ReadOfficePartRelationshipsOptions {
   resolveTargets?: boolean;
 }
 
-export function readOfficePackage(data: Uint8Array): OfficePackage {
-  const zip = readZipPackage(data);
-  return buildOfficePackageFromZipReadResult(zip.entries, zip.diagnostics);
-}
-
-export async function readOfficePackageAsync(
+export async function readOfficePackage(
   data: Uint8Array,
   options: ZipReadOptions = {}
 ): Promise<OfficePackage> {
-  const zip = await readZipPackageAsync(data, options);
+  const zip = await readZipPackage(data, options);
   return buildOfficePackageFromZipReadResult(zip.entries, zip.diagnostics);
 }
 
+/** @deprecated Use readOfficePackage; retained as the same function reference for 1.x. */
+export const readOfficePackageAsync = readOfficePackage;
+
 function buildOfficePackageFromZipReadResult(entries: ZipEntry[], zipDiagnostics: OfficeDiagnostic[]): OfficePackage {
   const diagnostics = [...zipDiagnostics];
+  if (diagnostics.some((diagnostic) => diagnostic.severity === "error" && diagnostic.code.startsWith("zip."))) {
+    return { entries: [], diagnostics };
+  }
   const contentTypesXml = getZipTextEntry(entries, "[Content_Types].xml");
   let contentTypes: OpcContentTypes | undefined;
 

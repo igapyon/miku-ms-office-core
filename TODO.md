@@ -180,6 +180,39 @@ Update this section while working. Do not rewrite unrelated TODO items.
 - [ ] Add a focused PPTX package fixture when PPTX read/write candidates become
   active.
 
+#### #11 Browser / IIFE ZIP API Design (2026-11-04)
+
+- [x] Write the core-only design and Luna implementation cards in
+  `docs/zip-browser-api-plan.md` (planning turn: 2026-11-04; implementation
+  followed on 2026-11-05). Product migration and #10 streaming ZIP work remain
+  separate.
+- [x] P1: Standard Streams helpers, internal errors, and 0.6.0 STORE golden.
+- [x] P2: Async public ZIP / Office package APIs and core-local callers.
+- [x] P3: ZIP validation, processing limits, and cancellation.
+- [x] P4: Neutral ESM, generated declarations, and local asset staging.
+- [x] P5: Real-browser acceptance and Node22/24 CI gates.
+- [x] P6: API documentation and package/lock metadata, finally set to the
+  user's requested 0.8.0 after correcting the plan's initial 1.0.0 proposal.
+- [x] Set package.json and both root package-lock.json version fields to 0.8.0
+  per the user's explicit correction; rebuild and verify the local stage and
+  package dry-run. The correction is committed locally in the current PR history.
+- [x] Fix the four self-review findings and add regressions for actual output
+  budgets / early size checks, declared-size preflight, abort after an await,
+  and dot-suffix release staging / browser version selection.
+
+Implementation completed 2026-11-05. Final local gates and stage digests are
+recorded in `docs/completion-audit.md` and `HANDOFF.md`. Real-browser acceptance
+ran on Node 26.12.1 / macOS 27.0.1 arm64 with Playwright 1.64.1, Chromium
+156.0.8078.4, Firefox 157.0, and WebKit 27.2. Node22/24 are configured in CI;
+the recorded local Node runtime was 26.12.1. No sibling products or #10 APIs
+were changed.
+
+Core P1–P6 completion does not establish that every completion condition in
+Issue #11 is done. The product impact and migration survey remains open:
+
+- [ ] Record each consuming product's core version, ZIP API, runtime, confirmed
+  paths and constraints; prioritize any product-side follow-up work.
+
 ### Blockers
 
 - Sibling `miku-md2docx` now has deliberate proof-of-use working tree changes;

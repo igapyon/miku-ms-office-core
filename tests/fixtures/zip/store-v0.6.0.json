@@ -1,0 +1,23 @@
+{
+  "generatedFromHead": "656c5e9",
+  "cases": [
+    {
+      "name": "empty",
+      "entries": [],
+      "options": {},
+      "length": 22,
+      "sha256": "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85"
+    },
+    {
+      "name": "default-order-utf8-binary",
+      "entries": [
+        { "path": "z-last.txt", "data": "last" },
+        { "path": "資料/テスト.bin", "dataHex": "00017f80ff" },
+        { "path": "a-first.txt", "data": "first" }
+      ],
+      "options": {},
+      "length": 346,
+      "sha256": "20c1ee06e0fc7187f2d90db828e3be14dcf55f66ac4628e8c2a5484c66c0ad0c"
+    }
+  ]
+}
