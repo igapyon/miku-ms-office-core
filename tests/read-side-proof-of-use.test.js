@@ -18,7 +18,7 @@ const REL_HYPERLINK = "http://schemas.openxmlformats.org/officeDocument/2006/rel
 
 describe("read-side proof-of-use package plumbing", () => {
   it("loads package parts, content types, media, and resolved part relationships", async () => {
-    const packageBytes = writeZipPackage([
+    const packageBytes = await writeZipPackage([
       {
         path: "[Content_Types].xml",
         data: buildOpcContentTypesXml({
@@ -70,10 +70,11 @@ describe("read-side proof-of-use package plumbing", () => {
     ]);
 
     const officePackage = await readOfficePackageAsync(packageBytes);
-    const syncOfficePackage = readOfficePackage(packageBytes);
+    const canonicalOfficePackage = await readOfficePackage(packageBytes);
 
     expect(officePackage.diagnostics).toEqual([]);
-    expect(syncOfficePackage.diagnostics).toEqual([]);
+    expect(canonicalOfficePackage.diagnostics).toEqual([]);
+    expect(readOfficePackageAsync).toBe(readOfficePackage);
     expect(resolveOpcContentType(officePackage.contentTypes, "word/media/image1.png")).toBe("image/png");
     expect(listOfficeMediaParts(officePackage.entries).map((entry) => entry.path)).toEqual([
       "word/media/image1.png"

@@ -1,14 +1,18 @@
 # Package Consumption
 
-Checked on 2026-06-23.
+Checked on 2026-11-05. The 0.8.0 implementation is locally staged; it has not
+been published or uploaded to a GitHub Release.
 
 ## Consumer Policy
 
-`miku-ms-office-core` is currently an internal ESM library. The standard
-consumer-facing artifact is the versioned single-file release asset:
+`miku-ms-office-core` remains an internal ESM library. The versioned consumer
+artifact set contains the single-file module, source map, and TypeScript
+declaration:
 
 ```text
 miku-ms-office-core-<version>.mjs
+miku-ms-office-core-<version>.mjs.map
+miku-ms-office-core-<version>.d.mts
 ```
 
 For version `0.5.0`, the source asset is:
@@ -159,7 +163,7 @@ current distribution channel for product-side vendoring.
 Do not publish this package to npm until that is explicitly chosen as a separate
 distribution path.
 
-## Runtime Note
+## Historical Runtime Note: v0.5.0
 
 The current published `v0.5.0` asset is ESM and Node-oriented. Its ZIP sync
 compression/decompression path uses `node:zlib`, and the published asset still
@@ -184,3 +188,36 @@ runtime-shape asset names `miku-ms-office-core-0.5.0.1.mjs` and
 `miku-ms-office-core-0.5.0.1.mjs.map`. The release asset digests match the
 locally staged assets, and the sibling proof vendor copies were verified with
 `TAG_NAME=v0.5.0.1 npm run verify:consumer-assets`.
+
+## Current Runtime Contract: 0.8.0
+
+The 0.8.0 implementation makes ZIP read and write APIs asynchronous and uses
+the standard raw `CompressionStream` and `DecompressionStream` format when
+DEFLATE is requested. STORE remains the default. The core source and bundled
+ESM have no Node builtin imports. The package engine is Node 22 or newer.
+
+The same generated ESM was verified as browser ESM over loopback HTTP, as an
+IIFE opened from `file://` while offline, and in a Blob Worker in Chromium,
+Firefox, and WebKit. Node-generated DEFLATE was read in each browser; browser
+output was opened by Node and Python's standard `zipfile`. These are core
+acceptance results. Product migration remains separate.
+
+The 0.8.0 module, source map, and declaration were staged locally from the
+current package version and verified against the generated bundle. The
+release-asset workflow now reruns unit tests, type checks, staging checks, and
+the three-browser suite before upload. No release workflow was started in this
+implementation task.
+
+Staged-version selection is shared by asset verification, standalone type
+checks, the browser server, the IIFE generator, and Worker tests. `TAG_NAME`
+pins the requested version; without it, consumers discover the single staged
+`.mjs` and reject missing or ambiguous candidates. Accepted dot-suffix tags
+such as `v0.8.0.1` use the same pipeline. The release workflow passes its tag
+to every step. The earlier implementation's automatic `v1.0.0.1` selection
+and explicit `v1.0.0` selection were verified locally after the self-review
+fixes; the corrected `v0.8.0` stage is verified below.
+
+After the user explicitly selected 0.8.0, the module, source map, and
+declaration were rebuilt and staged as `miku-ms-office-core-0.8.0.*`.
+`verify:staged-assets` and `npm pack --dry-run` passed; no 0.8.0 Release was
+published.

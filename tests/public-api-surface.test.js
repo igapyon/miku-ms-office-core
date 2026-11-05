@@ -4,6 +4,9 @@ import * as core from "../dist/index.js";
 describe("public API surface", () => {
   it("exports the current low-level Office package helpers", () => {
     expect(Object.keys(core).sort()).toEqual([
+      "DEFAULT_ZIP_READ_LIMITS",
+      "DEFAULT_ZIP_WRITE_LIMITS",
+      "ZipError",
       "asBytes",
       "buildOpcContentTypesXml",
       "buildOpcRelationshipsPath",

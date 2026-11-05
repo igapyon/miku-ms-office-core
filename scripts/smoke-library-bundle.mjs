@@ -4,6 +4,9 @@ import { pathToFileURL } from "node:url";
 import { transform } from "esbuild";
 
 const expectedExports = [
+  "DEFAULT_ZIP_READ_LIMITS",
+  "DEFAULT_ZIP_WRITE_LIMITS",
+  "ZipError",
   "asBytes",
   "buildOpcContentTypesXml",
   "buildOpcRelationshipsPath",
@@ -74,14 +77,14 @@ const context = {
   Uint8Array
 };
 const browserLikeCore = vm.runInNewContext(`${iifeBuild.code}; MikuMsOfficeCore;`, context);
-const zip = browserLikeCore.writeZipPackage([
+const zip = await browserLikeCore.writeZipPackage([
   {
     path: "word/document.xml",
     data: new TextEncoder().encode("<w:document/>"),
     compression: "store"
   }
 ]);
-const result = browserLikeCore.readZipPackage(zip);
+const result = await browserLikeCore.readZipPackage(zip);
 
 if (result.diagnostics.length > 0 || result.entries[0]?.path !== "word/document.xml") {
   throw new Error("Browser-style IIFE smoke failed for stored ZIP read/write.");

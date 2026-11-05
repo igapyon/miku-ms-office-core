@@ -219,3 +219,75 @@ npm_config_cache=workplace/.npm-cache npm pack --dry-run
 
 Do not run `npm pack --dry-run` in parallel with `npm test` or `npm run build:all`,
 because `prebuild` intentionally cleans `dist`.
+
+## #11 Browser / IIFE ZIP API (2026-11-05)
+
+P1–P6 of `docs/zip-browser-api-plan.md` are implemented in this repository.
+ZIP and Office package read/write APIs now return Promises and use standard raw
+Compression Streams. ZIP32 validation, configurable processing limits,
+cancellation, and all-or-nothing read results are included. The writer keeps
+STORE as its default. No sibling product migration or #10 file-backed streaming
+API was included. The core implementation is committed locally in the current
+PR history; no push, tag, Release upload, or Issue update was made.
+
+This completes the core P1–P6 scope. It does not establish completion of every
+condition in Issue #11: the Issue also asks for a product-by-product inventory
+of core versions, APIs, runtimes, representative paths and constraints, and
+prioritized follow-up work. That product survey remains outstanding, so PR
+text should reference #11 without claiming to close it.
+
+Verification on the local Node 26.12.1 / macOS 27.0.1 arm64 environment:
+
+- `npm test`: Vitest 4.1.12, 12 files / 43 tests passed after the self-review fixes.
+- `npm run build:all`, `npm run test:types` (DOM and WebWorker consumers),
+  `npm run smoke:bundle`, `npm run verify:staged-assets`, `npm audit`,
+  `npm pack --dry-run`, and `git diff --check` passed.
+- `npm run test:browser`: 9 tests passed across Chromium 156.0.8078.4,
+  Firefox 157.0, and WebKit 27.2 with Playwright 1.64.1. Coverage includes
+  browser ESM, offline IIFE, Blob Worker, Node interoperability, and Python
+  `zipfile` interoperability.
+- The suite passed on both the temporary `v1.0.0.1` stage without `TAG_NAME`
+  and the final `v1.0.0` stage with explicit `TAG_NAME=v1.0.0` (9 tests each).
+- Node 22 and 24 are configured in CI; they were not the local verification
+  runtimes for this audit.
+
+At the pre-correction `v1.0.0` verification point, these generated assets had
+been staged locally and not published:
+
+| Asset | SHA-256 |
+| --- | --- |
+| `miku-ms-office-core-1.0.0.mjs` | `1537966dfbffa0a914ee3c023c9d049a22baba6689e40b06ae240eec7a4bf075` |
+| `miku-ms-office-core-1.0.0.mjs.map` | `b36240dd3a17c13a93c93124fafb0a77d3ea145233ca56c074177c981ec8b265` |
+| `miku-ms-office-core-1.0.0.d.mts` | `3c67737ff84c1eda496bc3b421d828b04c4aaba7de38e21e94e0988fdc7c734d` |
+
+The self-review corrections enforce actual remaining total budgets, stop at
+the first chunk exceeding a declared size, preflight all declared entry sizes,
+and check cancellation after the final write await. Regressions also exercise
+normal and dot-suffix staging, standalone types, IIFE generation, and explicit
+tag mismatch rejection. The temporary browser-tested `1.0.0.1.mjs` digest was
+`cffe3a87c3d088f20a7b21b61565f9ab9db3554c863ca89403e0f5b6a909a337`;
+its map and declaration digests were the same as the final stage above.
+
+## User-Directed Version Correction (2026-11-05)
+
+The initial P6 implementation used the plan's proposed 1.0.0. The user then
+explicitly selected 0.8.0. `npm version 0.8.0 --no-git-tag-version` updated
+`package.json`, the lockfile root, and `packages[""].version`; generated output
+was rebuilt and restaged at 0.8.0. The version correction is committed locally
+in the current PR history and has not been tagged or released.
+
+- `npm run build:all` passed.
+- `npm run verify:staged-assets` passed, including DOM and WebWorker declaration
+  consumers.
+- `npm pack --dry-run --json` passed as `miku-ms-office-core-0.8.0.tgz` (42
+  files, 29,012 bytes).
+- The earlier 43-test suite and both 9-test browser runs covered the same source
+  code; this version-only correction was checked through build, stage, and pack.
+
+Current local `v0.8.0` stage digests:
+
+| Asset | SHA-256 |
+| --- | --- |
+| `miku-ms-office-core-0.8.0.mjs` | `82bdc9fb46726eef62946d4992041ce9d35c927452646cec5bd4e83ada11377c` |
+| `miku-ms-office-core-0.8.0.mjs.map` | `b36240dd3a17c13a93c93124fafb0a77d3ea145233ca56c074177c981ec8b265` |
+| `miku-ms-office-core-0.8.0.d.mts` | `3c67737ff84c1eda496bc3b421d828b04c4aaba7de38e21e94e0988fdc7c734d` |

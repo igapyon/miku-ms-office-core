@@ -3,14 +3,13 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": [],
     "strict": true,
     "declaration": true,
     "sourceMap": true,
     "outDir": "dist",
-    "rootDir": "src/ts",
-    "types": [
-      "node"
-    ]
+    "rootDir": "src/ts"
   },
   "include": [
     "src/ts/**/*.ts"

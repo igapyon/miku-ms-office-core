@@ -1,23 +1,56 @@
 # API Reference
 
-Checked on 2026-07-18.
+Checked on 2026-11-05 for the 0.8.0 implementation.
 
 This is the current public API surface for the initial low-level foundation.
 It is intentionally package plumbing, not DOCX/XLSX/PPTX/MS Project semantics.
 
 ## ZIP Package
 
-- `readZipPackage(data)`
-- `readZipPackageAsync(data, options)`
-- `writeZipPackage(entries, options)`
+- `readZipPackage(data, options?)`: `Promise<ZipReadResult>`
+- `readZipPackageAsync(data, options?)`: deprecated alias of `readZipPackage`
+- `writeZipPackage(entries, options?)`: `Promise<Uint8Array>`
 - `getZipEntry(entries, entryPath)`
 - `getZipTextEntry(entries, entryPath)`
 - `upsertZipEntry(entries, entry)`
 - `getDefaultZipEntryTimestamp()`
+- `DEFAULT_ZIP_READ_LIMITS`, `DEFAULT_ZIP_WRITE_LIMITS`
+- `ZipError`
 
-Synchronous ZIP APIs are Node-oriented and use `node:zlib` for deflate.
-Async ZIP reading can use `DecompressionStream`, Node zlib fallback, or an
-injected `inflateRaw` function.
+All three ZIP read/write operations are asynchronous, including STORE-only
+work. The `readZipPackageAsync` alias is the same function reference as
+`readZipPackage`; it remains deprecated for 1.x compatibility. Deflated input
+and output use the standard raw `DecompressionStream` and `CompressionStream`
+APIs. STORE remains the default writer method.
+
+Writer defaults are `order: "stable"` and 1980-01-01 00:00:00 UTC. Stable
+ordering compares normalized paths by UTF-16 code units. A per-entry
+`compression` or `modifiedAt` overrides the writer-wide default. Timestamps
+must be valid `Date` values from 1980 through 2107 and are encoded in UTC with
+DOS two-second precision. Entry names are UTF-8 and set the UTF-8 flag in both
+ZIP headers.
+
+`ZipReadOptions` accepts `signal` and partial `ZipReadLimits`.
+`ZipWriteOptions` accepts `timestamp`, `compression`, `order`, `signal`, and
+partial `ZipWriteLimits`. Unknown keys, the removed `inflateRaw` and
+`compressionLevel` options, invalid entry shapes, and invalid dates reject with
+`ZipError` (`code: "zip.options.invalid"`). Abort rejects with `AbortError`.
+
+The frozen default read limits are 64 MiB input, 10,000 entries, 64 MiB per
+entry, and 256 MiB total uncompressed data. The frozen write limits are 10,000
+entries, 64 MiB per entry, 256 MiB total input, and 256 MiB output. ZIP32
+limits also apply. Limit overrides use non-negative safe integers.
+
+ZIP32 structural failures, unsupported features, limit violations, size
+mismatches, CRC mismatches, and entry decompression failures return an empty
+`entries` array with an error diagnostic. Reader results never contain partial
+entries after a failure. ZIP64, encryption, multi-disk archives, and methods
+other than STORE and DEFLATE are unsupported. Directory entries are validated
+but omitted from the returned file entries. The reader accepts ZIP32 data
+descriptors with or without their optional signature.
+`ZipError` exposes a `code` and optional `path`. Missing raw-stream support
+rejects with `zip.runtime.unsupported` when the requested operation needs it;
+STORE reads and writes do not require compression streams.
 
 ZIP writing encodes entry names as UTF-8 and sets the ZIP general purpose
 UTF-8 flag in both local file headers and central directory headers. This is
@@ -55,8 +88,8 @@ content type policy remains product-side.
 
 ## Office Package
 
-- `readOfficePackage(data)`
-- `readOfficePackageAsync(data, options)`
+- `readOfficePackage(data, options?)`: `Promise<OfficePackage>`
+- `readOfficePackageAsync(data, options?)`: deprecated alias of `readOfficePackage`
 - `listOfficeMediaParts(entries)`
 - `readOfficePartRelationships(entries, sourcePartPath, options?)`
 

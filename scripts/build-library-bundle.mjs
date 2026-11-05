@@ -8,8 +8,8 @@ await build({
   outfile: "bundle/miku-ms-office-core.mjs",
   bundle: true,
   format: "esm",
-  platform: "node",
-  target: "node20",
+  platform: "neutral",
+  target: "es2022",
   sourcemap: true,
   sourcesContent: true,
   banner: {

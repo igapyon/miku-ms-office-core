@@ -66,15 +66,15 @@ describe("OPC helpers", () => {
     expect(resolveOpcContentType(parsed, "xl/workbook.xml")).toBe("application/workbook+xml");
   });
 
-  it("reads an Office package without interpreting document meaning", () => {
-    const zip = writeZipPackage([
+  it("reads an Office package without interpreting document meaning", async () => {
+    const zip = await writeZipPackage([
       {
         path: "[Content_Types].xml",
         data: `<Types><Default Extension="png" ContentType="image/png"/></Types>`
       },
       { path: "word/media/image1.png", data: new Uint8Array([1, 2, 3]) }
     ]);
-    const officePackage = readOfficePackage(zip);
+    const officePackage = await readOfficePackage(zip);
 
     expect(officePackage.diagnostics).toEqual([]);
     expect(officePackage.contentTypes?.defaults).toEqual([
