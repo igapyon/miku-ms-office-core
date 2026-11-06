@@ -53,6 +53,12 @@ This repository does not implement:
 
 Those remain product value in the individual miku-soft repositories.
 
+Core additions must be specification-based, product-neutral, and highly stable,
+with demonstrated use across multiple products and settled contracts protected
+by regression tests. Low-level duplication alone is insufficient. Product
+migration adapters, output choices, and legacy-byte special cases are not
+accepted into core. See the [strict admission policy](docs/commonization-scope-check.md#strict-admission-policy).
+
 ## Development
 
 ```sh

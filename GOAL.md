@@ -28,6 +28,13 @@ relationships, content types, media parts, XML helpers, and diagnostics while
 leaving DOCX, XLSX, PPTX, Markdown, and MS Project semantics in the product
 repositories.
 
+Only highly stable, specification-based, product-neutral behavior belongs in
+core. New additions require demonstrated use across multiple products and
+settled contracts protected by regression tests. Product-specific requirements
+and unsettled abstractions are rejected as core additions; retain them in the
+products even when this leaves duplication. Consumer integration should use
+existing core APIs. See `docs/commonization-scope-check.md` for the boundary.
+
 ## Done
 
 - The repository has a TypeScript / Node.js package foundation with build and
@@ -50,6 +57,9 @@ repositories.
   meaning interpretation into `miku-ms-office-core`.
 - A sibling repository needs behavior that conflicts with another sibling and
   the common boundary is no longer clear.
+- A proposed addition fails the strict admission conditions. Reject the core
+  addition and record the product-side constraint instead of expanding the
+  core backlog to force migration.
 - A dependency or ZIP/XML implementation choice would make reproducible output
   or cross-runtime parity difficult to explain.
 - `TODO.md` の `Retry Log` に同じ原因の失敗が3回記録された。

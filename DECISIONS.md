@@ -15,6 +15,31 @@ update_when:
 This file records important decisions for the AI agent.
 Read this before making or revisiting decisions, especially when the work seems to loop.
 
+## 2026-11-06: Strict Core Admission Boundary
+
+Decision:
+The user confirmed that only highly stable, product-neutral behavior belongs
+in core. New additions must be specification-based, demonstrated in multiple
+products, have settled input/output/error/compatibility contracts, and be
+protected by regression tests. Low-level duplication alone is insufficient.
+
+Reject product models, document assembly, templates, WBS/SVG/report generation,
+CLI/UI orchestration, migration adapters, and legacy-byte special cases as core
+additions. Products choose ZIP order, timestamps, and compression through existing
+generic options. Allow product-local duplication where behavior is unsettled.
+
+Impact:
+The consumer integration plan uses existing core APIs. Promise propagation and
+compatibility decisions belong to each product. Fix reproducible defects in an
+existing generic core contract; do not treat a product preference as a defect.
+If an existing API cannot satisfy a product contract, record the constraint and
+retain that path product-side. Reject unsupported core requests explicitly
+instead of adding them to the core implementation backlog. New generic API
+proposals, including streaming APIs, require a separate admission evaluation.
+See `docs/commonization-scope-check.md` and
+`docs/core-0.8-consumer-integration-plan.md`. This decision changes documentation;
+it does not remove or change existing APIs.
+
 ## 2026-11-04: Standard Streams ZIP APIs for #11
 
 Status: implemented on 2026-11-05; the user-confirmed package version is 0.8.0.
