@@ -1,26 +1,46 @@
 # Commonization Scope Check
 
-Checked on 2026-06-22.
+Boundary policy updated on 2026-11-06. Repository findings below retain the
+historical 2026-06-22 comparison; they are not a new consumer audit.
 
 ## Scope Decision
 
 `miku-ms-office-core` should currently stay at the low-level Office package
 plumbing layer.
 
-In scope:
+### Strict Admission Policy
+
+The core accepts only highly stable, product-neutral behavior. A new addition
+must satisfy all of these conditions:
+
+- Its behavior can be defined by ZIP, OPC, XML, or another established package
+  specification without knowing a product name, model, or workflow.
+- Multiple products have demonstrated the same need and contract in actual use.
+- Inputs, outputs, errors, and compatibility are settled and protected by
+  regression tests.
+- It needs no product-specific exceptions, temporary fallback, or speculative
+  extension points.
+
+Being low-level or duplicated is insufficient. Reject additions that fail these
+conditions and retain them product-side, allowing duplication while behavior
+is still evolving. A consumer integration plan does not authorize core API
+expansion. Existing generic-contract defects may be fixed with a reproducer and
+regression coverage; product preferences are not defects in that contract.
+
+In-scope areas, subject to this admission policy:
 
 - ZIP read/write primitives
-- ZIP timestamp normalization
-- ZIP entry ordering
-- ZIP compression policy
+- ZIP timestamp normalization mechanisms
+- ZIP entry ordering mechanisms
+- ZIP compression mechanisms
 - OPC part path normalization
 - relationship parsing, target resolution, and relationship XML helpers
 - `[Content_Types].xml` parsing and small generation helpers
 - media part enumeration and media content type helpers
-- XML escaping, XML text sanitization, and small XML traversal helpers
+- XML escaping, XML text sanitization, and settled string-level XML helpers
 - structured diagnostics for package-level failures
 
-Out of scope for now:
+Not accepted into core:
 
 - DOCX document structure and paragraph/run/table interpretation
 - XLSX workbook, worksheet, cell, style, formula, merge, drawing, and validation
@@ -29,7 +49,17 @@ Out of scope for now:
 - MS Project project, WBS, task, resource, assignment, calendar, and workbook
   schema semantics
 - Markdown conversion or Office assembly policy
+- product-specific entry selection, order, timestamps, and compression choices
+- product model codecs, templates, CLI/UI orchestration, and migration adapters
+- special cases or default changes to reproduce one product's legacy ZIP bytes
+- experimental abstractions or product-specific synchronous compatibility layers
 - full OOXML compatibility
+
+The core may expose generic options for order, timestamp, or compression; the
+product owns the choice. Public product API Promise propagation and compatibility
+decisions also remain product-side. Generic file-backed or streaming API
+proposals require separate admission review and are not accepted merely because
+a consumer migration requests them.
 
 ## Repository Findings
 
@@ -68,8 +98,8 @@ Out of scope for now:
 - `excel-io-zip.ts` is a strong reference for ZIP read/write behavior,
   including browser-compatible deflate read support.
 - `excel-io-package-xml.ts` contains package XML helper ideas that are useful,
-  but the current helper shape is workbook-oriented and should be generalized
-  before moving into core.
+  but the current helper shape is workbook-oriented and is not accepted into
+  core. Generalizing its names alone would not satisfy the admission policy.
 - `excel-io-workbook-*`, `excel-io-worksheet-*`, `excel-io-styles-*`,
   `project-xlsx-*`, and `wbs-xlsx-*` contain workbook, project, WBS, task,
   style, layout, and schema semantics and should stay in `mikuproject`.
@@ -82,7 +112,8 @@ The current `miku-ms-office-core` foundation is mostly aligned with this scope:
 - OPC path and relationship target helpers are in scope.
 - Content type parsing is in scope.
 - Basic XML escaping and attribute parsing are in scope.
-- `readOfficePackage` and media listing remain thin enough to keep.
+- `readOfficePackage` and media listing are existing APIs. Their presence does
+  not establish that additional Office conventions meet the admission policy.
 
 ## Detailed API Gap Notes
 
@@ -92,9 +123,9 @@ The current `miku-ms-office-core` foundation is mostly aligned with this scope:
   `writeZipPackage`.
 - Relationship and content type XML generation are covered by
   `buildOpcRelationshipsXml` and `buildOpcContentTypesXml`.
-- The changed entry order is expected because core stable ordering sorts OPC
-  part paths; product tests must assert the stable order instead of old input
-  order when using core defaults.
+- Core stable ordering sorts OPC part paths. Whether a product can adopt this
+  default or must use the existing input-order option is a product compatibility
+  decision. Do not change expectations alone to bypass a byte-compatibility contract.
 - No DOCX document semantics needed to move into core.
 
 `miku-md2xlsx` write-side comparison:
@@ -140,5 +171,6 @@ Remaining gaps before broader migration:
   `tests/fixtures/office/README.md`.
 - Add a focused PPTX package fixture only when PPTX read/write candidates become
   active.
-- Keep workbook/document loaders in product repositories until a repeated
-  package-level pattern emerges across multiple products.
+- Keep workbook/document loaders in product repositories. Only an independently
+  specified, stable package-level primitive that meets every admission condition
+  may be proposed separately; the loaders themselves remain out of scope.

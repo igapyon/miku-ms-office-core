@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 const tagName = process.env.TAG_NAME ?? process.argv[2] ?? "";
 
 if (!tagName.startsWith("v")) {
-  throw new Error("TAG_NAME must start with v, for example v0.5.0.1.");
+  throw new Error("TAG_NAME must start with v, for example v0.8.0.");
 }
 
 const version = tagName.slice(1);
@@ -23,12 +23,17 @@ if (
 
 const assetNames = [
   `${packageName}-${version}.mjs`,
-  `${packageName}-${version}.mjs.map`
+  `${packageName}-${version}.mjs.map`,
+  `${packageName}-${version}.d.mts`
 ];
 const consumers = [
+  "../miku-md2xlsx",
+  "../miku-md2docx",
+  "../miku-md2pptx",
   "../miku-docx2md",
   "../miku-xlsx2md",
-  "../mikuproject"
+  "../miku-pptx2md",
+  "../miku-project"
 ];
 
 for (const assetName of assetNames) {

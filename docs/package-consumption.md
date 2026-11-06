@@ -1,7 +1,9 @@
 # Package Consumption
 
-Checked on 2026-11-05. The 0.8.0 implementation is locally staged; it has not
-been published or uploaded to a GitHub Release.
+The 0.8.0 baseline was locally verified on 2026-11-06. Publication notes below
+describe the recorded state at that verification point. The worktree package
+version is now 0.8.1 after correcting the preceding metadata-only 0.9.0 commit;
+this does not update the consumer inventory or establish a new publication.
 
 ## Consumer Policy
 
@@ -189,7 +191,7 @@ runtime-shape asset names `miku-ms-office-core-0.5.0.1.mjs` and
 locally staged assets, and the sibling proof vendor copies were verified with
 `TAG_NAME=v0.5.0.1 npm run verify:consumer-assets`.
 
-## Current Runtime Contract: 0.8.0
+## Runtime Contract Baseline: 0.8.0
 
 The 0.8.0 implementation makes ZIP read and write APIs asynchronous and uses
 the standard raw `CompressionStream` and `DecompressionStream` format when
@@ -221,3 +223,63 @@ After the user explicitly selected 0.8.0, the module, source map, and
 declaration were rebuilt and staged as `miku-ms-office-core-0.8.0.*`.
 `verify:staged-assets` and `npm pack --dry-run` passed; no 0.8.0 Release was
 published.
+
+
+## 0.8.0 Consumer Integration
+
+The core-centered follow-up is planned in
+[0.8.0 Consumer Integration Plan](core-0.8-consumer-integration-plan.md).
+Its A1–A6 cards and G1 compatibility check are planned work; the asset checks
+recorded below are already completed.
+
+The user-agreed core boundary was tightened on 2026-11-06; see
+[Strict Admission Policy](commonization-scope-check.md#strict-admission-policy).
+This is a product-side integration plan using existing APIs. Core does not
+accept product models, assembly policy, migration adapters, or legacy-byte
+special cases. Reproducible defects in existing generic contracts may be fixed;
+product requirements do not automatically justify a new core API. A path that
+cannot use the existing contract remains product-owned, with its constraint
+recorded. The 0.8.0 assets and checks in this section are historical baselines;
+the later 0.8.1 metadata correction does not establish consumer migration.
+
+The shared API, ZIP validation, compression behavior, and three versioned assets
+are owned by this core. `miku-md2xlsx` and `miku-project` are peer consumers:
+XLSX generation and template reading in the former, and asynchronous XLSX ZIP
+reading in the latter, use the same public 0.8.0 API. Product meaning and UI
+remain in their product repositories.
+
+The adoption check at the 0.8.0 baseline was run from this repository:
+
+```sh
+npm run verify:consumer-assets -- v0.8.0
+```
+
+For a new check, use the chosen adoption version with matching package and
+staged asset versions. Do not infer a consumer upgrade from a core metadata bump.
+
+It compares the staged module, source map, and declaration against vendored
+copies in `miku-md2xlsx`, `miku-md2docx`, `miku-md2pptx`, `miku-docx2md`,
+`miku-xlsx2md`, `miku-pptx2md`, and `miku-project`. The current repository name
+is `miku-project`; historical `mikuproject` proof records above retain their
+original names.
+
+The `miku-project` application still has separate synchronous STORE ZIP helpers.
+Their replacement is a distinct API migration and is not completed by the
+asynchronous reader adoption. Web Release lock upgrades and repository-wide CI
+changes are separate from this core adoption check.
+
+
+Verified locally on 2026-11-06 with Node 26.12.1:
+
+- `npm run verify:consumer-assets -- v0.8.0`: all 21 files matched (seven
+  consumers times three staged assets).
+- `npm run verify:staged-assets`: module/map/declaration digests matched the
+  generated bundle; DOM and WebWorker declaration checks passed.
+- `miku-project` browser-runtime regression: six tests passed, including a
+  generated project XLSX compressed and read through the shared core.
+
+| Asset | SHA-256 |
+| --- | --- |
+| `miku-ms-office-core-0.8.0.mjs` | `82bdc9fb46726eef62946d4992041ce9d35c927452646cec5bd4e83ada11377c` |
+| `miku-ms-office-core-0.8.0.mjs.map` | `b36240dd3a17c13a93c93124fafb0a77d3ea145233ca56c074177c981ec8b265` |
+| `miku-ms-office-core-0.8.0.d.mts` | `3c67737ff84c1eda496bc3b421d828b04c4aaba7de38e21e94e0988fdc7c734d` |

@@ -210,8 +210,36 @@ were changed.
 Core P1–P6 completion does not establish that every completion condition in
 Issue #11 is done. The product impact and migration survey remains open:
 
+- [x] Refresh the core-owned consumer asset verifier for all three 0.8.0
+  artifacts, seven peer products, and the current `miku-project` path. All
+  21 vendored files match the stage.
+- [x] Document `miku-md2xlsx` and `miku-project` as peer users of the shared
+  0.8.0 contract in `docs/package-consumption.md`; record the remaining
+  synchronous project ZIP boundary and the separate Web distribution work.
+
+- [x] Prepare the consumer integration plan in
+  `docs/core-0.8-consumer-integration-plan.md`. A1 is the next inventory card;
+  A1–A6 and G1 remain planned, not implementation-complete.
+- [x] Record the user-agreed strict core admission boundary (2026-11-06).
+  Product-specific behavior and unsettled abstractions are rejected as core
+  additions; integration uses existing APIs. See
+  `docs/commonization-scope-check.md` and the plan's admission table.
 - [ ] Record each consuming product's core version, ZIP API, runtime, confirmed
-  paths and constraints; prioritize any product-side follow-up work.
+  paths and constraints; prioritize any product-side follow-up work (A1).
+- [ ] Record accepted generic-contract defects, rejected core requests, and
+  product-owned follow-ups in the adoption record (A6). Rejected additions
+  must not become unresolved core implementation tasks.
+
+Product-owned follow-ups in the plan: md2xlsx adoption audit (A2), project
+compatibility decisions (G1), product API Promise propagation and XLSX/report
+ZIP integration (A3/A4), and product acceptance (A5). These are not core feature
+requests or prerequisites for expanding core. If existing APIs cannot preserve
+a product contract, leave that path product-owned and record the constraint.
+
+Core rejects product models, templates, WBS/SVG/report generation, CLI adapters,
+legacy-byte special cases, and product-specific default changes. Low-level
+duplication alone does not justify admission. New generic APIs require the
+separate stability and demonstrated-use review in the scope document.
 
 ### Blockers
 
